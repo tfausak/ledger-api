@@ -5,13 +5,14 @@ module Ledger.Router
   , routes
   ) where
 
-import           Ledger.Actions          (getEntries, notAllowed, notFound)
+import           Ledger.Actions          (getEntries, notAllowed, notFound,
+                                          postEntries)
 import           Ledger.Internal.Actions (Action)
 
 import           Data.Map                (Map, findWithDefault, fromList,
                                           lookup)
 import           Data.Text               (Text)
-import           Network.HTTP.Types      (Method, methodGet)
+import           Network.HTTP.Types      (Method, methodGet, methodPost)
 import           Network.Wai             (Request, pathInfo, requestMethod)
 import           Prelude                 hiding (lookup, null)
 
@@ -24,5 +25,6 @@ routes :: Map [Text] (Map Method Action)
 routes = fromList
   [ (["entries"], fromList
     [ (methodGet, getEntries)
+    , (methodPost, postEntries)
     ])
   ]

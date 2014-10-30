@@ -4,7 +4,7 @@ module Ledger.Internal.Main
   , loadState
   ) where
 
-import           Ledger.Models           (Entry)
+import           Ledger.Models.Entry     (Entry)
 
 import           Data.Acid               (AcidState)
 import           Data.Acid.Memory        (openMemoryState)

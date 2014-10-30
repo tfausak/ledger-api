@@ -3,4 +3,5 @@ module Ledger.Models
   ) where
 
 import           Ledger.Models.Entry         as Models
+import           Ledger.Models.EntryRequest  as Models
 import           Ledger.Models.EntryResponse as Models
