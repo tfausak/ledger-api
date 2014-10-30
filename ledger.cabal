@@ -49,6 +49,7 @@ library
         Ledger.Main
         Ledger.Models
         Ledger.Models.Entry
+        Ledger.Models.EntryResponse
         Ledger.Router
     exposed: True
     buildable: True

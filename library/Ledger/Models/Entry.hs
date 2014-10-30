@@ -16,7 +16,6 @@ import           Data.Acid.Advanced   (Event (QueryEvent, UpdateEvent),
                                        IsAcidic,
                                        Method (MethodResult, MethodState),
                                        acidEvents)
-import           Data.Aeson           (ToJSON, object, toJSON, (.=))
 import           Data.SafeCopy        (SafeCopy, contain, getCopy, putCopy,
                                        safeGet, safePut)
 import           Data.Time            (UTCTime)
@@ -27,13 +26,6 @@ data Entry = Entry
   , created :: UTCTime
   , number  :: Integer
   } deriving (Typeable)
-
-instance ToJSON Entry where
-  toJSON entry = object
-    [ "amount" .= (fromRational (amount entry) :: Double)
-    , "created" .= created entry
-    , "number" .= number entry
-    ]
 
 instance SafeCopy Entry where
   getCopy = contain $ do

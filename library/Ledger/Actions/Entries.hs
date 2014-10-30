@@ -3,7 +3,7 @@ module Ledger.Actions.Entries
   ) where
 
 import           Ledger.Internal.Actions (Action, json)
-import           Ledger.Models           (QueryEntries (..))
+import           Ledger.Models           (QueryEntries (..), entryToResponse)
 
 import           Control.Monad.IO.Class  (liftIO)
 import           Control.Monad.Reader    (asks)
@@ -14,4 +14,5 @@ getEntries :: Action
 getEntries = do
   state <- asks snd
   entries <- liftIO (query state QueryEntries)
-  return (json status200 [] entries)
+  let entryResponses = map entryToResponse entries
+  return (json status200 [] entryResponses)
