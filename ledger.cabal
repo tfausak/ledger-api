@@ -38,6 +38,7 @@ library
     exposed-modules:
         Ledger
         Ledger.Actions
+        Ledger.Actions.Entries
         Ledger.Application
         Ledger.Internal.Actions
         Ledger.Internal.Main

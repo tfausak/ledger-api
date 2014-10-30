@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Ledger.Actions
-  ( notAllowed
+  ( module Actions
+  , notAllowed
   , notFound
   ) where
 
+import           Ledger.Actions.Entries  as Actions
 import           Ledger.Internal.Actions (Action, json)
 
 import           Data.Aeson              (Value (Null))
