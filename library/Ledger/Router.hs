@@ -2,11 +2,11 @@ module Ledger.Router
   ( route
   ) where
 
-import           Ledger.Actions       (notFound)
+import           Ledger.Actions          (notFound)
+import           Ledger.Internal.Actions (Action)
 
-import           Control.Monad.Reader (Reader)
-import           Network.Wai          (Request, Response, pathInfo)
+import           Network.Wai             (Request, pathInfo)
 
-route :: Request -> Reader Request Response
+route :: Request -> Action
 route request = case pathInfo request of
   _ -> notFound
