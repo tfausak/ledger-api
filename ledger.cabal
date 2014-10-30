@@ -27,12 +27,14 @@ library
     build-depends:
         base ==4.*,
         Cabal >=1.10,
+        configurator ==0.3.*,
         http-types ==0.8.*,
         wai ==3.*,
         warp ==3.*
     exposed-modules:
         Ledger
         Ledger.Application
+        Ledger.Internal.Main
         Ledger.Main
     exposed: True
     buildable: True
