@@ -27,7 +27,9 @@ library
     build-depends:
         base ==4.*,
         Cabal >=1.10,
+        aeson ==0.8.*,
         configurator ==0.3.*,
+        containers ==0.5.*,
         http-types ==0.8.*,
         mtl ==2.*,
         wai ==3.*,
@@ -36,6 +38,7 @@ library
         Ledger
         Ledger.Actions
         Ledger.Application
+        Ledger.Internal.Actions
         Ledger.Internal.Main
         Ledger.Main
         Ledger.Router
