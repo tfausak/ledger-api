@@ -26,9 +26,13 @@ source-repository head
 library
     build-depends:
         base ==4.*,
-        Cabal >=1.10
+        Cabal >=1.10,
+        http-types ==0.8.*,
+        wai ==3.*,
+        warp ==3.*
     exposed-modules:
         Ledger
+        Ledger.Application
         Ledger.Main
     exposed: True
     buildable: True
