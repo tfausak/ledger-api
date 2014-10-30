@@ -33,6 +33,7 @@ library
         http-types ==0.8.*,
         mtl ==2.*,
         text ==1.*,
+        time ==1.*,
         wai ==3.*,
         warp ==3.*
     exposed-modules:
