@@ -9,7 +9,7 @@ import           Ledger.Internal.Main (State)
 
 import           Control.Monad.Reader (ReaderT)
 import           Data.Aeson           (ToJSON, encode)
-import           Data.Map             (alter, fromList, toList)
+import           Data.Map             (fromList, insert, toList)
 import           Network.HTTP.Types   (ResponseHeaders, Status, hContentType)
 import           Network.Wai          (Request, Response, responseLBS)
 
@@ -18,5 +18,5 @@ type Action = ReaderT (Request, State) IO Response
 json :: (ToJSON a) => Status -> ResponseHeaders -> a -> Response
 json status headers value = responseLBS
   status
-  (toList (alter (const (Just "application/json")) hContentType (fromList headers)))
+  (toList (insert hContentType "application/json" (fromList headers)))
   (encode value)
