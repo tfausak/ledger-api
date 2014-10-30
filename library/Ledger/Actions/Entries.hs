@@ -4,7 +4,7 @@ module Ledger.Actions.Entries
   , getEntry
   ) where
 
-import           Ledger.Internal.Actions (Action, json, notFound)
+import           Ledger.Internal.Actions (Action, badRequest, json, notFound)
 import           Ledger.Models           (QueryEntries (..), WriteEntries (..),
                                           entryFromRequest, entryToResponse)
 import qualified Ledger.Models.Entry     as Entry
@@ -12,10 +12,10 @@ import qualified Ledger.Models.Entry     as Entry
 import           Control.Monad.IO.Class  (liftIO)
 import           Control.Monad.Reader    (asks)
 import           Data.Acid               (query, update)
-import           Data.Aeson              (Value (Null), decode)
+import           Data.Aeson              (decode)
 import           Data.List               (find)
 import           Data.Text               (unpack)
-import           Network.HTTP.Types      (status200, status400)
+import           Network.HTTP.Types      (status200)
 import           Network.Wai             (pathInfo, strictRequestBody)
 import           Text.Read               (readMaybe)
 
@@ -32,9 +32,7 @@ postEntries = do
   body <- liftIO (strictRequestBody request)
   let maybeEntryRequest = decode body
   case maybeEntryRequest of
-    Nothing -> do
-      let response = json status400 [] Null
-      return response
+    Nothing -> badRequest
     Just entryRequest -> do
       state <- asks snd
       entry <- liftIO $ do
@@ -59,4 +57,6 @@ getEntry = do
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
         Nothing -> notFound
-        Just _ -> return (json status200 [] Null)
+        Just entry -> do
+          let entryResponse = entryToResponse entry
+          return (json status200 [] entryResponse)
