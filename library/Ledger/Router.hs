@@ -5,12 +5,12 @@ module Ledger.Router
   ) where
 
 import qualified Ledger.Actions          as Actions
-import           Ledger.Internal.Actions (Action)
+import qualified Ledger.Internal.Actions as Actions
 
 import           Network.Wai             (Request, pathInfo, requestMethod)
 import           Prelude                 hiding (lookup, null)
 
-route :: Request -> Action
+route :: Request -> Actions.Action
 route request = case pathInfo request of
   ["entries"] -> case requestMethod request of
     "GET" -> Actions.getEntries

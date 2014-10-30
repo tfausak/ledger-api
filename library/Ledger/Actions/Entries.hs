@@ -4,7 +4,7 @@ module Ledger.Actions.Entries
   , getEntry
   ) where
 
-import           Ledger.Internal.Actions (Action, json)
+import           Ledger.Internal.Actions (Action, json, notFound)
 import           Ledger.Models           (QueryEntries (..), WriteEntries (..),
                                           entryFromRequest, entryToResponse)
 import qualified Ledger.Models.Entry     as Entry
@@ -15,7 +15,7 @@ import           Data.Acid               (query, update)
 import           Data.Aeson              (Value (Null), decode)
 import           Data.List               (find)
 import           Data.Text               (unpack)
-import           Network.HTTP.Types      (status200, status400, status404)
+import           Network.HTTP.Types      (status200, status400)
 import           Network.Wai             (pathInfo, strictRequestBody)
 import           Text.Read               (readMaybe)
 
@@ -52,11 +52,11 @@ getEntry = do
   let parameter = pathInfo request !! 1
   let maybeNumber = readMaybe (unpack parameter)
   case maybeNumber of
-    Nothing -> return (json status404 [] Null)
+    Nothing -> notFound
     Just number -> do
       state <- asks snd
       entries <- liftIO (query state QueryEntries)
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
-        Nothing -> return (json status404 [] Null)
+        Nothing -> notFound
         Just _ -> return (json status200 [] Null)
