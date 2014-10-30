@@ -5,8 +5,8 @@
 
 module Ledger.Models.Entry
   ( Entry (..)
-  , queryEntries
-  , writeEntries
+  , QueryEntries (..)
+  , WriteEntries (..)
   ) where
 
 import           Control.Monad.Reader (ask)

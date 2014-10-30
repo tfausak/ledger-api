@@ -36,6 +36,7 @@ library
         safecopy ==0.8.*,
         text ==1.*,
         time ==1.*,
+        transformers ==0.3.*,
         wai ==3.*,
         warp ==3.*
     exposed-modules:

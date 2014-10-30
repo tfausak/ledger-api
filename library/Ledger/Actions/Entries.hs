@@ -3,11 +3,15 @@ module Ledger.Actions.Entries
   ) where
 
 import           Ledger.Internal.Actions (Action, json)
-import           Ledger.Models           (Entry)
+import           Ledger.Models           (QueryEntries (..))
 
+import           Control.Monad.IO.Class  (liftIO)
+import           Control.Monad.Reader    (asks)
+import           Data.Acid               (query)
 import           Network.HTTP.Types      (status200)
 
 getEntries :: Action
 getEntries = do
-  let entries = [] :: [Entry]
+  state <- asks snd
+  entries <- liftIO (query state QueryEntries)
   return (json status200 [] entries)
