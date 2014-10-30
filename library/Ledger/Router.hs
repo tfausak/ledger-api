@@ -2,29 +2,21 @@
 
 module Ledger.Router
   ( route
-  , routes
   ) where
 
-import           Ledger.Actions          (getEntries, notAllowed, notFound,
-                                          postEntries)
+import qualified Ledger.Actions          as Actions
 import           Ledger.Internal.Actions (Action)
 
-import           Data.Map                (Map, findWithDefault, fromList,
-                                          lookup)
-import           Data.Text               (Text)
-import           Network.HTTP.Types      (Method, methodGet, methodPost)
 import           Network.Wai             (Request, pathInfo, requestMethod)
 import           Prelude                 hiding (lookup, null)
 
 route :: Request -> Action
-route request = case lookup (pathInfo request) routes of
-  Nothing -> notFound
-  Just methods -> findWithDefault notAllowed (requestMethod request) methods
-
-routes :: Map [Text] (Map Method Action)
-routes = fromList
-  [ (["entries"], fromList
-    [ (methodGet, getEntries)
-    , (methodPost, postEntries)
-    ])
-  ]
+route request = case pathInfo request of
+  ["entries"] -> case requestMethod request of
+    "GET" -> Actions.getEntries
+    "POST" -> Actions.postEntries
+    _ -> Actions.notAllowed
+  ["entries", _] -> case requestMethod request of
+    "GET" -> Actions.getEntry
+    _ -> Actions.notAllowed
+  _ -> Actions.notFound
