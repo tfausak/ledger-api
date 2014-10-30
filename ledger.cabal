@@ -27,11 +27,13 @@ library
     build-depends:
         base ==4.*,
         Cabal >=1.10,
+        acid-state ==0.12.*,
         aeson ==0.8.*,
         configurator ==0.3.*,
         containers ==0.5.*,
         http-types ==0.8.*,
         mtl ==2.*,
+        safecopy ==0.8.*,
         text ==1.*,
         time ==1.*,
         wai ==3.*,
