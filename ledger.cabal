@@ -34,6 +34,7 @@ library
         warp ==3.*
     exposed-modules:
         Ledger
+        Ledger.Actions
         Ledger.Application
         Ledger.Internal.Main
         Ledger.Main
