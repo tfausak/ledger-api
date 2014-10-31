@@ -24,7 +24,7 @@ instance FromJSON EntryRequest where
       }
   parseJSON _ = mzero
 
-toEntry :: [Entry.Entry] -> EntryRequest -> IO Entry.Entry
+toEntry :: Entry.Entries -> EntryRequest -> IO Entry.Entry
 toEntry entries entryRequest = do
   created <- getCurrentTime
   let number = 1 + genericLength entries

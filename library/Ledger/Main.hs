@@ -7,7 +7,7 @@ module Ledger.Main
   ) where
 
 import           Ledger.Application       (application)
-import           Ledger.Models.Entry      (Entry)
+import           Ledger.Models.Entry      (Entries)
 import           Ledger.State             (State)
 import           Paths_ledger             (getDataFileName)
 
@@ -33,5 +33,5 @@ loadConfig = do
 
 loadState :: IO State
 loadState = do
-  let entries = [] :: [Entry]
+  let entries = [] :: Entries
   openMemoryState entries

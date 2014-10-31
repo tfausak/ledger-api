@@ -2,8 +2,8 @@ module Ledger.State
   ( State
   ) where
 
-import           Ledger.Models.Entry (Entry)
+import           Ledger.Models.Entry (Entries)
 
 import           Data.Acid           (AcidState)
 
-type State = AcidState [Entry]
+type State = AcidState Entries

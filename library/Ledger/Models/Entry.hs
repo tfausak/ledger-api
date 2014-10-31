@@ -4,7 +4,8 @@
 {-# LANGUAGE TypeFamilies       #-}
 
 module Ledger.Models.Entry
-  ( Entry (..)
+  ( Entries
+  , Entry (..)
   , QueryEntries (QueryEntries)
   , WriteEntries (WriteEntries)
   ) where
@@ -20,6 +21,8 @@ import           Data.SafeCopy        (SafeCopy, contain, getCopy, putCopy,
                                        safeGet, safePut)
 import           Data.Time            (UTCTime)
 import           Data.Typeable        (Typeable)
+
+type Entries = [Entry]
 
 data Entry = Entry
   { amount  :: Rational
@@ -46,35 +49,35 @@ instance SafeCopy Entry where
     safePut (deleted entry)
     safePut (number entry)
 
-queryEntries :: Query [Entry] [Entry]
+queryEntries :: Query Entries Entries
 queryEntries = ask
 
-writeEntries :: [Entry] -> Update [Entry] ()
+writeEntries :: Entries -> Update Entries ()
 writeEntries = put
 
 data QueryEntries = QueryEntries
   deriving (Typeable)
 instance QueryEvent QueryEntries
 instance Method QueryEntries where
-  type MethodResult QueryEntries = [Entry]
-  type MethodState QueryEntries = [Entry]
+  type MethodResult QueryEntries = Entries
+  type MethodState QueryEntries = Entries
 instance SafeCopy QueryEntries where
   getCopy = contain (return QueryEntries)
   putCopy QueryEntries = contain (return ())
 
-data WriteEntries = WriteEntries [Entry]
+data WriteEntries = WriteEntries Entries
   deriving (Typeable)
 instance UpdateEvent WriteEntries
 instance Method WriteEntries where
   type MethodResult WriteEntries = ()
-  type MethodState WriteEntries = [Entry]
+  type MethodState WriteEntries = Entries
 instance SafeCopy WriteEntries where
   getCopy = contain $ do
     entries <- safeGet
     return (WriteEntries entries)
   putCopy (WriteEntries entries) = contain (safePut entries)
 
-instance IsAcidic [Entry] where
+instance IsAcidic Entries where
   acidEvents =
     [ UpdateEvent (\ (WriteEntries entries) -> writeEntries entries)
     , QueryEvent (\ QueryEntries -> queryEntries)
