@@ -3,6 +3,7 @@ module Ledger.Actions.Entries
   , postEntries
   , getEntry
   , putEntry
+  , deleteEntry
   ) where
 
 import           Ledger.Internal.Actions (Action, badRequest, json, notFound)
@@ -14,7 +15,7 @@ import qualified Ledger.Models.Entry     as Entry
 import           Control.Monad.IO.Class  (liftIO)
 import           Control.Monad.Reader    (asks)
 import           Data.Acid               (query, update)
-import           Data.Aeson              (decode)
+import           Data.Aeson              (Value (Null), decode)
 import           Data.List               (find)
 import           Data.Text               (unpack)
 import           Network.HTTP.Types      (status200)
@@ -96,3 +97,28 @@ putEntry = do
                 return newEntry
               let entryResponse = entryToResponse entry
               return (json status200 [] entryResponse)
+
+deleteEntry :: Action
+deleteEntry = do
+  -- get entry number from request parameters
+  request <- asks fst
+  let parameter = pathInfo request !! 1
+  let maybeNumber = readMaybe (unpack parameter)
+  case maybeNumber of
+    Nothing -> notFound
+    Just number -> do
+      -- find entry in state
+      state <- asks snd
+      entries <- liftIO (query state QueryEntries)
+      let maybeEntry = find (\ entry -> Entry.number entry == number) entries
+      case maybeEntry of
+        Nothing -> notFound
+        Just _ -> do
+          -- delete the entry
+          _ <- liftIO $ do
+            oldEntries <- query state QueryEntries
+            let newEntries = filter
+                  (\ e -> Entry.number e /= number)
+                  oldEntries
+            update state (WriteEntries newEntries)
+          return (json status200 [] Null)

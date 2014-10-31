@@ -19,5 +19,6 @@ route request = case pathInfo request of
   ["entries", _] -> case requestMethod request of
     "GET" -> Actions.getEntry
     "PUT" -> Actions.putEntry
+    "DELETE" -> Actions.deleteEntry
     _ -> Actions.notAllowed
   _ -> Actions.notFound
