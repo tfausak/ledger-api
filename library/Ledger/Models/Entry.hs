@@ -24,6 +24,7 @@ import           Data.Typeable        (Typeable)
 data Entry = Entry
   { amount  :: Rational
   , created :: UTCTime
+  , deleted :: Maybe UTCTime
   , number  :: Integer
   } deriving (Typeable)
 
@@ -31,15 +32,18 @@ instance SafeCopy Entry where
   getCopy = contain $ do
     entryAmount <- safeGet
     entryCreated <- safeGet
+    entryDeleted <- safeGet
     entryNumber <- safeGet
     return Entry
       { amount = entryAmount
       , created = entryCreated
+      , deleted = entryDeleted
       , number = entryNumber
       }
   putCopy entry = contain $ do
     safePut (amount entry)
     safePut (created entry)
+    safePut (deleted entry)
     safePut (number entry)
 
 queryEntries :: Query [Entry] [Entry]

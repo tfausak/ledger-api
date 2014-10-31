@@ -17,7 +17,9 @@ import           Control.Monad.Reader    (asks)
 import           Data.Acid               (query, update)
 import           Data.Aeson              (Value (Null), decode)
 import           Data.List               (find)
+import           Data.Maybe              (isNothing)
 import           Data.Text               (unpack)
+import           Data.Time               (getCurrentTime)
 import           Network.HTTP.Types      (status200)
 import           Network.Wai             (pathInfo, strictRequestBody)
 import           Text.Read               (readMaybe)
@@ -25,7 +27,8 @@ import           Text.Read               (readMaybe)
 getEntries :: Action
 getEntries = do
   state <- asks snd
-  entries <- liftIO (query state QueryEntries)
+  allEntries <- liftIO (query state QueryEntries)
+  let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
   let entryResponses = map entryToResponse entries
   return (json status200 [] entryResponses)
 
@@ -56,7 +59,8 @@ getEntry = do
     Nothing -> notFound
     Just number -> do
       state <- asks snd
-      entries <- liftIO (query state QueryEntries)
+      allEntries <- liftIO (query state QueryEntries)
+      let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
         Nothing -> notFound
@@ -75,7 +79,8 @@ putEntry = do
     Just number -> do
       -- find entry in state
       state <- asks snd
-      entries <- liftIO (query state QueryEntries)
+      allEntries <- liftIO (query state QueryEntries)
+      let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
         Nothing -> notFound
@@ -109,16 +114,19 @@ deleteEntry = do
     Just number -> do
       -- find entry in state
       state <- asks snd
-      entries <- liftIO (query state QueryEntries)
+      allEntries <- liftIO (query state QueryEntries)
+      let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
         Nothing -> notFound
-        Just _ -> do
+        Just oldEntry -> do
           -- delete the entry
           _ <- liftIO $ do
             oldEntries <- query state QueryEntries
-            let newEntries = filter
-                  (\ e -> Entry.number e /= number)
+            now <- getCurrentTime
+            let newEntry = oldEntry { Entry.deleted = Just now }
+            let newEntries = map
+                  (\ e -> if Entry.number e == number then newEntry else e)
                   oldEntries
             update state (WriteEntries newEntries)
           return (json status200 [] Null)

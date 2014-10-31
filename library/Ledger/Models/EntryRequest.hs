@@ -32,6 +32,7 @@ entryFromRequest entries entryRequest = do
   let entry = Entry.Entry
         { Entry.amount = realToFrac (amount entryRequest)
         , Entry.created = created
+        , Entry.deleted = Nothing
         , Entry.number = number
         }
   return entry
