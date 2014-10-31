@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Models.EntryResponse
-  ( EntryResponse
-  , entryToResponse
+module Ledger.Models.Entry.Response
+  ( EntryResponse (..)
+  , toResponse
   ) where
 
 import qualified Ledger.Models.Entry as Entry
@@ -23,8 +23,8 @@ instance ToJSON EntryResponse where
     , "number" .= number entryResponse
     ]
 
-entryToResponse :: Entry.Entry -> EntryResponse
-entryToResponse entry = EntryResponse
+toResponse :: Entry.Entry -> EntryResponse
+toResponse entry = EntryResponse
   { amount = fromRational (Entry.amount entry)
   , created = Entry.created entry
   , number = Entry.number entry

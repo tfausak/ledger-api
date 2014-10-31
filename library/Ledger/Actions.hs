@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Ledger.Actions
   ( module Actions
   ) where

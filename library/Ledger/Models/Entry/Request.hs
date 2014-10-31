@@ -1,9 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Models.EntryRequest
-  ( EntryRequest
-  , entryFromRequest
-  , updateEntryFromRequest
+module Ledger.Models.Entry.Request
+  ( EntryRequest (..)
+  , toEntry
   ) where
 
 import qualified Ledger.Models.Entry as Entry
@@ -25,8 +24,8 @@ instance FromJSON EntryRequest where
       }
   parseJSON _ = mzero
 
-entryFromRequest :: [Entry.Entry] -> EntryRequest -> IO Entry.Entry
-entryFromRequest entries entryRequest = do
+toEntry :: [Entry.Entry] -> EntryRequest -> IO Entry.Entry
+toEntry entries entryRequest = do
   created <- getCurrentTime
   let number = 1 + genericLength entries
   let entry = Entry.Entry
@@ -36,8 +35,3 @@ entryFromRequest entries entryRequest = do
         , Entry.number = number
         }
   return entry
-
-updateEntryFromRequest :: Entry.Entry -> EntryRequest -> Entry.Entry
-updateEntryFromRequest entry entryRequest = entry
-  { Entry.amount = realToFrac (amount entryRequest)
-  }

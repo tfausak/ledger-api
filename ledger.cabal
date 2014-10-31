@@ -49,10 +49,9 @@ library
         Ledger.Actions.Entries
         Ledger.Application
         Ledger.Main
-        Ledger.Models
         Ledger.Models.Entry
-        Ledger.Models.EntryRequest
-        Ledger.Models.EntryResponse
+        Ledger.Models.Entry.Request
+        Ledger.Models.Entry.Response
         Ledger.Router
         Ledger.Types
         Ledger.Utilities

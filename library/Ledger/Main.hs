@@ -7,7 +7,7 @@ module Ledger.Main
   ) where
 
 import           Ledger.Application       (application)
-import           Ledger.Models            (Entry)
+import           Ledger.Models.Entry      (Entry)
 import           Ledger.Types             (State)
 import           Paths_ledger             (getDataFileName)
 

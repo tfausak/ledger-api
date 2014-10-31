@@ -6,32 +6,34 @@ module Ledger.Actions.Entries
   , deleteEntry
   ) where
 
-import           Ledger.Actions.Common  (badRequest, notFound)
-import           Ledger.Models          (QueryEntries (..), WriteEntries (..),
-                                         entryFromRequest, entryToResponse,
-                                         updateEntryFromRequest)
-import qualified Ledger.Models.Entry    as Entry
-import           Ledger.Types           (Action)
-import           Ledger.Utilities       (json)
+import           Ledger.Actions.Common        (badRequest, notFound)
+import           Ledger.Models.Entry          (QueryEntries (QueryEntries),
+                                               WriteEntries (WriteEntries))
+import qualified Ledger.Models.Entry          as Entry
+import           Ledger.Models.Entry.Request  (toEntry)
+import qualified Ledger.Models.Entry.Request  as EntryRequest
+import           Ledger.Models.Entry.Response (toResponse)
+import           Ledger.Types                 (Action)
+import           Ledger.Utilities             (json)
 
-import           Control.Monad.IO.Class (liftIO)
-import           Control.Monad.Reader   (asks)
-import           Data.Acid              (query, update)
-import           Data.Aeson             (Value (Null), decode)
-import           Data.List              (find)
-import           Data.Maybe             (isNothing)
-import           Data.Text              (unpack)
-import           Data.Time              (getCurrentTime)
-import           Network.HTTP.Types     (status200)
-import           Network.Wai            (pathInfo, strictRequestBody)
-import           Text.Read              (readMaybe)
+import           Control.Monad.IO.Class       (liftIO)
+import           Control.Monad.Reader         (asks)
+import           Data.Acid                    (query, update)
+import           Data.Aeson                   (Value (Null), decode)
+import           Data.List                    (find)
+import           Data.Maybe                   (isNothing)
+import           Data.Text                    (unpack)
+import           Data.Time                    (getCurrentTime)
+import           Network.HTTP.Types           (status200)
+import           Network.Wai                  (pathInfo, strictRequestBody)
+import           Text.Read                    (readMaybe)
 
 getEntries :: Action
 getEntries = do
   state <- asks snd
   allEntries <- liftIO (query state QueryEntries)
   let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
-  let entryResponses = map entryToResponse entries
+  let entryResponses = map toResponse entries
   return (json status200 [] entryResponses)
 
 postEntries :: Action
@@ -45,11 +47,11 @@ postEntries = do
       state <- asks snd
       entry <- liftIO $ do
         oldEntries <- query state QueryEntries
-        entry <- entryFromRequest oldEntries entryRequest
+        entry <- toEntry oldEntries entryRequest
         let newEntries = entry : oldEntries
         update state (WriteEntries newEntries)
         return entry
-      let entryResponse = entryToResponse entry
+      let entryResponse = toResponse entry
       return (json status200 [] entryResponse)
 
 getEntry :: Action
@@ -67,7 +69,7 @@ getEntry = do
       case maybeEntry of
         Nothing -> notFound
         Just entry -> do
-          let entryResponse = entryToResponse entry
+          let entryResponse = toResponse entry
           return (json status200 [] entryResponse)
 
 putEntry :: Action
@@ -96,13 +98,15 @@ putEntry = do
               -- create a new updated entry
               entry <- liftIO $ do
                 oldEntries <- query state QueryEntries
-                let newEntry = updateEntryFromRequest oldEntry entryRequest
+                let newEntry = oldEntry
+                      { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
+                      }
                 let newEntries = map
                       (\ e -> if Entry.number e == number then newEntry else e)
                       oldEntries
                 update state (WriteEntries newEntries)
                 return newEntry
-              let entryResponse = entryToResponse entry
+              let entryResponse = toResponse entry
               return (json status200 [] entryResponse)
 
 deleteEntry :: Action
