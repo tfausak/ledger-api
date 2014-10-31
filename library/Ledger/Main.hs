@@ -7,12 +7,12 @@ module Ledger.Main
 import           Ledger.Application       (application)
 import           Ledger.Internal.Main     (loadConfig, loadState)
 
-import           Data.Configurator        (lookupDefault)
+import           Data.Configurator        (require)
 import           Network.Wai.Handler.Warp (run)
 
 main :: IO ()
 main = do
   config <- loadConfig
-  port <- lookupDefault 8080 config "port"
+  port <- require config "port"
   state <- loadState
   run port (application state)

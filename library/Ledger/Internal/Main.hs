@@ -5,6 +5,7 @@ module Ledger.Internal.Main
   ) where
 
 import           Ledger.Models.Entry     (Entry)
+import           Paths_ledger            (getDataFileName)
 
 import           Data.Acid               (AcidState)
 import           Data.Acid.Memory        (openMemoryState)
@@ -16,8 +17,9 @@ type State = AcidState [Entry]
 
 loadConfig :: IO Config
 loadConfig = do
-  arguments <- getArgs
-  let paths = map Required arguments
+  name <- getDataFileName "default.cfg"
+  names <- getArgs
+  let paths = map Required (name : names)
   load paths
 
 loadState :: IO State
