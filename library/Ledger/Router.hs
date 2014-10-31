@@ -20,9 +20,9 @@ route request =
       method = requestMethod request
   in  case path of
         [] -> static method "ledger.html" "text/html"
-        ["jsx.js"] -> static method "JSXTransformer-0.11.2.js" "application/javascript"
+        ["jsx.js"] -> static method "JSXTransformer-0.12.0.js" "application/javascript"
         ["ledger.jsx"] -> static method "ledger.jsx" "text/jsx"
-        ["react.js"] -> static method "react-0.11.2.js" "application/javascript"
+        ["react.js"] -> static method "react-0.12.0.js" "application/javascript"
         ["superagent.js"] -> static method "superagent-0.20.0.js" "application/javascript"
 
         ["entries"] -> case method of

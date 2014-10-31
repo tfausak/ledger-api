@@ -16,10 +16,10 @@ author: Taylor Fausak <taylor@fausak.me>
 tested-with: GHC ==7.8.*
 data-files:
     default.cfg
-    JSXTransformer-0.11.2.js
+    JSXTransformer-0.12.0.js
     ledger.html
     ledger.jsx
-    react-0.11.2.js
+    react-0.12.0.js
     superagent-0.20.0.js
 data-dir: data
 extra-source-files:

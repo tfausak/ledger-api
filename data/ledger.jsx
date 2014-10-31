@@ -1,11 +1,10 @@
-/** @jsx React.DOM */
-
 var EntryBox = React.createClass({
   transform: function(object) {
     return {
       amount: object.amount,
       date: new Date(object.created),
-      key: object.number
+      key: object.number,
+      number: object.number
     };
   },
   handleEntrySubmit: function(entry) {
@@ -61,7 +60,12 @@ var EntryTable = React.createClass({
   render: function() {
     var entryRows = this.props.entries.map(function (entry) {
       return (
-        <EntryRow amount={entry.amount} date={entry.date} key={entry.key} />
+        <EntryRow
+          amount={entry.amount}
+          date={entry.date}
+          key={entry.key}
+          number={entry.number}
+        />
       );
     });
     return (
@@ -85,7 +89,7 @@ var EntryRow = React.createClass({
   render: function() {
     return (
       <tr>
-        <td>{this.props.key}</td>
+        <td>{this.props.number}</td>
         <td>${this.props.amount.toFixed(2)}</td>
         <td>{this.props.date.toISOString()}</td>
       </tr>
@@ -93,7 +97,7 @@ var EntryRow = React.createClass({
   }
 });
 
-React.renderComponent(
+React.render(
   <EntryBox />,
   document.getElementById('content')
 );
