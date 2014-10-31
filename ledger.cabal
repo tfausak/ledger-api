@@ -48,7 +48,6 @@ library
         Ledger.Actions.Common
         Ledger.Actions.Entries
         Ledger.Application
-        Ledger.Internal.Actions
         Ledger.Main
         Ledger.Models
         Ledger.Models.Entry
@@ -56,6 +55,7 @@ library
         Ledger.Models.EntryResponse
         Ledger.Router
         Ledger.Types
+        Ledger.Utilities
     exposed: True
     buildable: True
     default-language: Haskell2010

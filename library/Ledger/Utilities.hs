@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Internal.Actions
+module Ledger.Utilities
   ( json
   ) where
 

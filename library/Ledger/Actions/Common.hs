@@ -6,11 +6,11 @@ module Ledger.Actions.Common
   , notAllowed
   ) where
 
-import           Ledger.Internal.Actions (json)
-import           Ledger.Types            (Action)
+import           Ledger.Types       (Action)
+import           Ledger.Utilities   (json)
 
-import           Data.Aeson              (Value (Null))
-import           Network.HTTP.Types      (status400, status404, status405)
+import           Data.Aeson         (Value (Null))
+import           Network.HTTP.Types (status400, status404, status405)
 
 badRequest :: Action
 badRequest = return (json status400 [] Null)
