@@ -4,11 +4,10 @@ module Ledger.Router
   ( route
   ) where
 
-import qualified Ledger.Actions          as Actions
-import qualified Ledger.Internal.Actions as Actions
-import           Ledger.Types            (Action)
+import qualified Ledger.Actions as Actions
+import           Ledger.Types   (Action)
 
-import           Network.Wai             (Request, pathInfo, requestMethod)
+import           Network.Wai    (Request, pathInfo, requestMethod)
 
 route :: Request -> Action
 route request =

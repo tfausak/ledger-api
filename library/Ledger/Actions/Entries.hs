@@ -6,7 +6,8 @@ module Ledger.Actions.Entries
   , deleteEntry
   ) where
 
-import           Ledger.Internal.Actions (badRequest, json, notFound)
+import           Ledger.Actions.Common   (badRequest, notFound)
+import           Ledger.Internal.Actions (json)
 import           Ledger.Models           (QueryEntries (..), WriteEntries (..),
                                           entryFromRequest, entryToResponse,
                                           updateEntryFromRequest)
