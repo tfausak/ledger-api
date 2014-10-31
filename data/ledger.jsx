@@ -5,7 +5,7 @@ var EntryBox = React.createClass({
     return {
       amount: object.amount,
       date: new Date(object.created),
-      key: object.id
+      key: object.number
     };
   },
   handleEntrySubmit: function(entry) {
@@ -37,7 +37,7 @@ var EntryForm = React.createClass({
     var amount = this.refs.amount.getDOMNode().valueAsNumber;
 
     if (!isNaN(amount) && isFinite(amount)) {
-      var entry = {amount: amount, id: 0};
+      var entry = {amount: amount, number: 0};
       this.props.onEntrySubmit(entry);
       this.refs.amount.getDOMNode().value = '';
     }
