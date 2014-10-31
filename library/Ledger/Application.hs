@@ -2,8 +2,8 @@ module Ledger.Application
   ( application
   ) where
 
-import           Ledger.Internal.Main (State)
 import           Ledger.Router        (route)
+import           Ledger.Types         (State)
 
 import           Control.Monad.Reader (runReaderT)
 import           Network.Wai          (Application)

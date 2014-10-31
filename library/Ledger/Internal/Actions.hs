@@ -8,7 +8,7 @@ module Ledger.Internal.Actions
   , notAllowed
   ) where
 
-import           Ledger.Internal.Main (State)
+import           Ledger.Types         (State)
 
 import           Control.Monad.Reader (ReaderT)
 import           Data.Aeson           (ToJSON, Value (Null), encode)
