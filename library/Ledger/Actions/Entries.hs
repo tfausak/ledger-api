@@ -6,11 +6,12 @@ module Ledger.Actions.Entries
   , deleteEntry
   ) where
 
-import           Ledger.Internal.Actions (Action, badRequest, json, notFound)
+import           Ledger.Internal.Actions (badRequest, json, notFound)
 import           Ledger.Models           (QueryEntries (..), WriteEntries (..),
                                           entryFromRequest, entryToResponse,
                                           updateEntryFromRequest)
 import qualified Ledger.Models.Entry     as Entry
+import           Ledger.Types            (Action)
 
 import           Control.Monad.IO.Class  (liftIO)
 import           Control.Monad.Reader    (asks)
