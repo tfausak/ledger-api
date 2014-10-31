@@ -59,7 +59,7 @@ library
         Ledger.Models.Entry.Request
         Ledger.Models.Entry.Response
         Ledger.Router
-        Ledger.Types
+        Ledger.State
         Ledger.Utilities
     exposed: True
     buildable: True

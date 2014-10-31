@@ -7,7 +7,7 @@ module Ledger.Actions.Common
   , notAllowed
   ) where
 
-import           Ledger.Types         (State)
+import           Ledger.State         (State)
 import           Ledger.Utilities     (json)
 
 import           Control.Monad.Reader (ReaderT)

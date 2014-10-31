@@ -1,4 +1,4 @@
-module Ledger.Types
+module Ledger.State
   ( State
   ) where
 

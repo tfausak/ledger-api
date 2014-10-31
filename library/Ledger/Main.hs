@@ -8,7 +8,7 @@ module Ledger.Main
 
 import           Ledger.Application       (application)
 import           Ledger.Models.Entry      (Entry)
-import           Ledger.Types             (State)
+import           Ledger.State             (State)
 import           Paths_ledger             (getDataFileName)
 
 import           Data.Acid.Memory         (openMemoryState)
