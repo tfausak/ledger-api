@@ -2,11 +2,13 @@ module Ledger.Actions.Entries
   ( getEntries
   , postEntries
   , getEntry
+  , putEntry
   ) where
 
 import           Ledger.Internal.Actions (Action, badRequest, json, notFound)
 import           Ledger.Models           (QueryEntries (..), WriteEntries (..),
-                                          entryFromRequest, entryToResponse)
+                                          entryFromRequest, entryToResponse,
+                                          updateEntryFromRequest)
 import qualified Ledger.Models.Entry     as Entry
 
 import           Control.Monad.IO.Class  (liftIO)
@@ -60,3 +62,37 @@ getEntry = do
         Just entry -> do
           let entryResponse = entryToResponse entry
           return (json status200 [] entryResponse)
+
+putEntry :: Action
+putEntry = do
+  -- get entry number from request parameters
+  request <- asks fst
+  let parameter = pathInfo request !! 1
+  let maybeNumber = readMaybe (unpack parameter)
+  case maybeNumber of
+    Nothing -> notFound
+    Just number -> do
+      -- find entry in state
+      state <- asks snd
+      entries <- liftIO (query state QueryEntries)
+      let maybeEntry = find (\ entry -> Entry.number entry == number) entries
+      case maybeEntry of
+        Nothing -> notFound
+        Just oldEntry -> do
+          -- parse entry from request body
+          body <- liftIO (strictRequestBody request)
+          let maybeEntryRequest = decode body
+          case maybeEntryRequest of
+            Nothing -> badRequest
+            Just entryRequest -> do
+              -- create a new updated entry
+              entry <- liftIO $ do
+                oldEntries <- query state QueryEntries
+                let newEntry = updateEntryFromRequest oldEntry entryRequest
+                let newEntries = map
+                      (\ e -> if Entry.number e == number then newEntry else e)
+                      oldEntries
+                update state (WriteEntries newEntries)
+                return newEntry
+              let entryResponse = entryToResponse entry
+              return (json status200 [] entryResponse)

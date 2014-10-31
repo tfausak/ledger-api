@@ -3,6 +3,7 @@
 module Ledger.Models.EntryRequest
   ( EntryRequest
   , entryFromRequest
+  , updateEntryFromRequest
   ) where
 
 import qualified Ledger.Models.Entry as Entry
@@ -34,3 +35,8 @@ entryFromRequest entries entryRequest = do
         , Entry.number = number
         }
   return entry
+
+updateEntryFromRequest :: Entry.Entry -> EntryRequest -> Entry.Entry
+updateEntryFromRequest entry entryRequest = entry
+  { Entry.amount = realToFrac (amount entryRequest)
+  }
