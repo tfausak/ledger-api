@@ -48,7 +48,6 @@ library
         Ledger.Actions.Entries
         Ledger.Application
         Ledger.Internal.Actions
-        Ledger.Internal.Main
         Ledger.Main
         Ledger.Models
         Ledger.Models.Entry

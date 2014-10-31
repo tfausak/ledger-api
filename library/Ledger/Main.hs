@@ -2,13 +2,20 @@
 
 module Ledger.Main
   ( main
+  , loadConfig
+  , loadState
   ) where
 
 import           Ledger.Application       (application)
-import           Ledger.Internal.Main     (loadConfig, loadState)
+import           Ledger.Models            (Entry)
+import           Ledger.Types             (State)
+import           Paths_ledger             (getDataFileName)
 
-import           Data.Configurator        (require)
+import           Data.Acid.Memory         (openMemoryState)
+import           Data.Configurator        (Worth (Required), load, require)
+import           Data.Configurator.Types  (Config)
 import           Network.Wai.Handler.Warp (run)
+import           System.Environment       (getArgs)
 
 main :: IO ()
 main = do
@@ -16,3 +23,15 @@ main = do
   port <- require config "port"
   state <- loadState
   run port (application state)
+
+loadConfig :: IO Config
+loadConfig = do
+  name <- getDataFileName "default.cfg"
+  names <- getArgs
+  let paths = map Required (name : names)
+  load paths
+
+loadState :: IO State
+loadState = do
+  let entries = [] :: [Entry]
+  openMemoryState entries
