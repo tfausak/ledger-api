@@ -16,6 +16,11 @@ author: Taylor Fausak <taylor@fausak.me>
 tested-with: GHC ==7.8.*
 data-files:
     default.cfg
+    JSXTransformer-0.11.2.js
+    ledger.html
+    ledger.jsx
+    react-0.11.2.js
+    superagent-0.20.0.js
 data-dir: data
 extra-source-files:
     CHANGELOG.md
@@ -32,6 +37,7 @@ library
         Cabal >=1.10,
         acid-state ==0.12.*,
         aeson ==0.8.*,
+        bytestring ==0.10.*,
         configurator ==0.3.*,
         containers ==0.5.*,
         http-types ==0.8.*,
