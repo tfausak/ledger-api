@@ -9,17 +9,19 @@ import qualified Ledger.Internal.Actions as Actions
 import           Ledger.Types            (Action)
 
 import           Network.Wai             (Request, pathInfo, requestMethod)
-import           Prelude                 hiding (lookup, null)
 
 route :: Request -> Action
-route request = case pathInfo request of
-  ["entries"] -> case requestMethod request of
-    "GET" -> Actions.getEntries
-    "POST" -> Actions.postEntries
-    _ -> Actions.notAllowed
-  ["entries", _] -> case requestMethod request of
-    "GET" -> Actions.getEntry
-    "PUT" -> Actions.putEntry
-    "DELETE" -> Actions.deleteEntry
-    _ -> Actions.notAllowed
-  _ -> Actions.notFound
+route request =
+  let path = pathInfo request
+      method = requestMethod request
+  in  case path of
+        ["entries"] -> case method of
+          "GET" -> Actions.getEntries
+          "POST" -> Actions.postEntries
+          _ -> Actions.notAllowed
+        ["entries", _] -> case method of
+          "GET" -> Actions.getEntry
+          "PUT" -> Actions.putEntry
+          "DELETE" -> Actions.deleteEntry
+          _ -> Actions.notAllowed
+        _ -> Actions.notFound
