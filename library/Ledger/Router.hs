@@ -5,8 +5,8 @@ module Ledger.Router
   , static
   ) where
 
+import           Ledger.Actions         (Action)
 import qualified Ledger.Actions         as Actions
-import           Ledger.Types           (Action)
 import           Ledger.Utilities       (file)
 
 import           Control.Monad.IO.Class (liftIO)

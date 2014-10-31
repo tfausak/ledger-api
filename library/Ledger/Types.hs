@@ -1,14 +1,9 @@
 module Ledger.Types
-  ( Action
-  , State
+  ( State
   ) where
 
-import           Ledger.Models.Entry  (Entry)
+import           Ledger.Models.Entry (Entry)
 
-import           Control.Monad.Reader (ReaderT)
-import           Data.Acid            (AcidState)
-import           Network.Wai          (Request, Response)
-
-type Action = ReaderT (Request, State) IO Response
+import           Data.Acid           (AcidState)
 
 type State = AcidState [Entry]

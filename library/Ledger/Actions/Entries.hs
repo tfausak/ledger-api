@@ -6,14 +6,13 @@ module Ledger.Actions.Entries
   , deleteEntry
   ) where
 
-import           Ledger.Actions.Common        (badRequest, notFound)
+import           Ledger.Actions.Common        (Action, badRequest, notFound)
 import           Ledger.Models.Entry          (QueryEntries (QueryEntries),
                                                WriteEntries (WriteEntries))
 import qualified Ledger.Models.Entry          as Entry
 import           Ledger.Models.Entry.Request  (toEntry)
 import qualified Ledger.Models.Entry.Request  as EntryRequest
 import           Ledger.Models.Entry.Response (toResponse)
-import           Ledger.Types                 (Action)
 import           Ledger.Utilities             (json)
 
 import           Control.Monad.IO.Class       (liftIO)

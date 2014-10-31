@@ -1,16 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Ledger.Actions.Common
-  ( badRequest
+  ( Action
+  , badRequest
   , notFound
   , notAllowed
   ) where
 
-import           Ledger.Types       (Action)
-import           Ledger.Utilities   (json)
+import           Ledger.Types         (State)
+import           Ledger.Utilities     (json)
 
-import           Data.Aeson         (Value (Null))
-import           Network.HTTP.Types (status400, status404, status405)
+import           Control.Monad.Reader (ReaderT)
+import           Data.Aeson           (Value (Null))
+import           Network.HTTP.Types   (status400, status404, status405)
+import           Network.Wai          (Request, Response)
+
+type Action = ReaderT (Request, State) IO Response
 
 badRequest :: Action
 badRequest = return (json status400 [] Null)
