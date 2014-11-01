@@ -85,6 +85,7 @@ library
     hs-source-dirs: library
     other-modules:
         Paths_ledger
+    ghc-options: -Wall
  
 executable ledger
     build-depends:
