@@ -13,10 +13,18 @@ var EntryBox = React.createClass({
       this.setState({entries: [this.transform(response.body)].concat(this.state.entries)})
     }.bind(this));
   },
+  handleEntryClick: function (number) {
+    superagent.del('/entries/' + number, function () {
+      this.getEntries();
+    }.bind(this));
+  },
   getInitialState: function() {
     return {entries: []}
   },
   componentDidMount: function() {
+    this.getEntries();
+  },
+  getEntries: function() {
     superagent.get('/entries', function(response) {
       this.setState({entries: response.body.map(this.transform)});
     }.bind(this));
@@ -26,7 +34,10 @@ var EntryBox = React.createClass({
       <div>
         <h2>Entries</h2>
         <EntryForm onEntrySubmit={this.handleEntrySubmit} />
-        <EntryTable entries={this.state.entries}/>
+        <EntryTable
+          entries={this.state.entries}
+          onEntryClick={this.handleEntryClick}
+        />
       </div>
     );
   }
@@ -45,7 +56,6 @@ var EntryForm = React.createClass({
     }
 
     e.preventDefault();
-    return;
   },
   render: function() {
     return (
@@ -61,6 +71,9 @@ var EntryForm = React.createClass({
 });
 
 var EntryTable = React.createClass({
+  handleEntryClick: function(number) {
+    this.props.onEntryClick(number);
+  },
   render: function() {
     var entryRows = this.props.entries.sort(function (a, b) {
       return b.date - a.date;
@@ -72,9 +85,10 @@ var EntryTable = React.createClass({
           key={entry.key}
           name={entry.name}
           number={entry.number}
+          onEntryClick={this.handleEntryClick}
         />
       );
-    });
+    }.bind(this));
     return (
       <table>
         <thead>
@@ -94,6 +108,10 @@ var EntryTable = React.createClass({
 });
 
 var EntryRow = React.createClass({
+  handleClick: function(e) {
+    this.props.onEntryClick(this.props.number);
+    e.preventDefault();
+  },
   render: function() {
     return (
       <tr>
@@ -105,6 +123,9 @@ var EntryRow = React.createClass({
           </time>
         </td>
         <td>{this.props.name}</td>
+        <td>
+          <button onClick={this.handleClick}>Delete</button>
+        </td>
       </tr>
     );
   }
