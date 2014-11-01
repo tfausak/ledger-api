@@ -4,6 +4,7 @@ var EntryBox = React.createClass({
       amount: object.amount,
       date: new Date(object.created),
       key: object.number,
+      name: object.name,
       number: object.number
     };
   },
@@ -34,11 +35,13 @@ var EntryBox = React.createClass({
 var EntryForm = React.createClass({
   handleSubmit: function(e) {
     var amount = this.refs.amount.getDOMNode().valueAsNumber;
+    var name = this.refs.name.getDOMNode().value;
 
-    if (!isNaN(amount) && isFinite(amount)) {
-      var entry = {amount: amount, number: 0};
+    if (!isNaN(amount) && isFinite(amount) && name) {
+      var entry = {amount: amount, name: name, number: 0};
       this.props.onEntrySubmit(entry);
       this.refs.amount.getDOMNode().value = '';
+      this.refs.name.getDOMNode().value = '';
     }
 
     e.preventDefault();
@@ -49,6 +52,7 @@ var EntryForm = React.createClass({
       <div>
         <form onSubmit={this.handleSubmit}>
           <input type="number" ref="amount" />
+          <input ref="name" />
           <input type="submit" />
         </form>
       </div>
@@ -66,6 +70,7 @@ var EntryTable = React.createClass({
           amount={entry.amount}
           date={entry.date}
           key={entry.key}
+          name={entry.name}
           number={entry.number}
         />
       );
@@ -77,6 +82,7 @@ var EntryTable = React.createClass({
             <th>ID</th>
             <th>Amount</th>
             <th>Date</th>
+            <th>Name</th>
           </tr>
         </thead>
         <tbody>
@@ -98,6 +104,7 @@ var EntryRow = React.createClass({
             {this.props.date.toLocaleString()}
           </time>
         </td>
+        <td>{this.props.name}</td>
       </tr>
     );
   }

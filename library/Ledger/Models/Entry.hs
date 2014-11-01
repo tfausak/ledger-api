@@ -20,6 +20,7 @@ import           Data.Acid.Advanced   (Event (QueryEvent, UpdateEvent),
 import           Data.Map             (Map)
 import           Data.SafeCopy        (SafeCopy, contain, getCopy, putCopy,
                                        safeGet, safePut)
+import           Data.Text            (Text)
 import           Data.Time            (UTCTime)
 import           Data.Typeable        (Typeable)
 
@@ -29,6 +30,7 @@ data Entry = Entry
   { amount  :: Rational
   , created :: UTCTime
   , deleted :: Maybe UTCTime
+  , name    :: Text
   , number  :: Integer
   } deriving (Typeable)
 
@@ -37,17 +39,20 @@ instance SafeCopy Entry where
     entryAmount <- safeGet
     entryCreated <- safeGet
     entryDeleted <- safeGet
+    entryName <- safeGet
     entryNumber <- safeGet
     return Entry
       { amount = entryAmount
       , created = entryCreated
       , deleted = entryDeleted
+      , name = entryName
       , number = entryNumber
       }
   putCopy entry = contain $ do
     safePut (amount entry)
     safePut (created entry)
     safePut (deleted entry)
+    safePut (name entry)
     safePut (number entry)
 
 queryEntries :: Query Entries Entries

@@ -10,17 +10,21 @@ import qualified Ledger.Models.Entry as Entry
 import           Control.Monad       (mzero)
 import           Data.Aeson          (FromJSON, Value (Object), parseJSON, (.:))
 import qualified Data.Map            as Map
+import           Data.Text           (Text)
 import           Data.Time           (getCurrentTime)
 
 data EntryRequest = EntryRequest
   { amount :: Double
+  , name   :: Text
   }
 
 instance FromJSON EntryRequest where
   parseJSON (Object object) = do
     requestAmount <- object .: "amount"
+    requestName <- object .: "name"
     return EntryRequest
       { amount = requestAmount
+      , name = requestName
       }
   parseJSON _ = mzero
 
@@ -34,6 +38,7 @@ toEntry entries entryRequest = do
         { Entry.amount = realToFrac (amount entryRequest)
         , Entry.created = created
         , Entry.deleted = Nothing
+        , Entry.name = name entryRequest
         , Entry.number = number
         }
   return entry
