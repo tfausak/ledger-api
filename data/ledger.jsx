@@ -58,7 +58,9 @@ var EntryForm = React.createClass({
 
 var EntryTable = React.createClass({
   render: function() {
-    var entryRows = this.props.entries.map(function (entry) {
+    var entryRows = this.props.entries.sort(function (a, b) {
+      return b.date - a.date;
+    }).map(function (entry) {
       return (
         <EntryRow
           amount={entry.amount}
@@ -92,7 +94,7 @@ var EntryRow = React.createClass({
         <td>{this.props.number}</td>
         <td>${this.props.amount.toFixed(2)}</td>
         <td>
-          <time datetime="{this.props.date.toISOString()}">
+          <time dateTime="{this.props.date.toISOString()}">
             {this.props.date.toLocaleString()}
           </time>
         </td>
