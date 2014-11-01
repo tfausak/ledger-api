@@ -20,6 +20,7 @@ import           Control.Monad.Reader         (asks)
 import           Data.Acid                    (query, update)
 import           Data.Aeson                   (Value (Null), decode)
 import           Data.List                    (find)
+import qualified Data.Map                     as Map
 import           Data.Maybe                   (isNothing)
 import           Data.Text                    (unpack)
 import           Data.Time                    (getCurrentTime)
@@ -31,7 +32,8 @@ getEntries :: Action
 getEntries = do
   state <- asks snd
   allEntries <- liftIO (query state QueryEntries)
-  let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
+  let entries = filter
+        (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
   let entryResponses = map toResponse entries
   return (json status200 [] entryResponses)
 
@@ -47,7 +49,7 @@ postEntries = do
       entry <- liftIO $ do
         oldEntries <- query state QueryEntries
         entry <- toEntry oldEntries entryRequest
-        let newEntries = entry : oldEntries
+        let newEntries = Map.insert (Entry.number entry) entry oldEntries
         update state (WriteEntries newEntries)
         return entry
       let entryResponse = toResponse entry
@@ -63,7 +65,8 @@ getEntry = do
     Just number -> do
       state <- asks snd
       allEntries <- liftIO (query state QueryEntries)
-      let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
+      let entries = filter
+            (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
         Nothing -> notFound
@@ -83,7 +86,8 @@ putEntry = do
       -- find entry in state
       state <- asks snd
       allEntries <- liftIO (query state QueryEntries)
-      let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
+      let entries = filter
+            (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
         Nothing -> notFound
@@ -100,9 +104,8 @@ putEntry = do
                 let newEntry = oldEntry
                       { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
                       }
-                let newEntries = map
-                      (\ e -> if Entry.number e == number then newEntry else e)
-                      oldEntries
+                let newEntries = Map.insert
+                      (Entry.number oldEntry) newEntry oldEntries
                 update state (WriteEntries newEntries)
                 return newEntry
               let entryResponse = toResponse entry
@@ -120,7 +123,8 @@ deleteEntry = do
       -- find entry in state
       state <- asks snd
       allEntries <- liftIO (query state QueryEntries)
-      let entries = filter (\ entry -> isNothing (Entry.deleted entry)) allEntries
+      let entries = filter
+            (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
       let maybeEntry = find (\ entry -> Entry.number entry == number) entries
       case maybeEntry of
         Nothing -> notFound
@@ -130,8 +134,7 @@ deleteEntry = do
             oldEntries <- query state QueryEntries
             now <- getCurrentTime
             let newEntry = oldEntry { Entry.deleted = Just now }
-            let newEntries = map
-                  (\ e -> if Entry.number e == number then newEntry else e)
-                  oldEntries
+            let newEntries = Map.insert
+                  (Entry.number oldEntry) newEntry oldEntries
             update state (WriteEntries newEntries)
           return (json status200 [] Null)

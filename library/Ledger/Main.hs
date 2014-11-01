@@ -14,6 +14,7 @@ import           Paths_ledger             (getDataFileName)
 import           Data.Acid.Memory         (openMemoryState)
 import           Data.Configurator        (Worth (Required), load, require)
 import           Data.Configurator.Types  (Config)
+import           Data.Map                 (fromList)
 import           Network.Wai.Handler.Warp (run)
 import           System.Environment       (getArgs)
 
@@ -33,5 +34,5 @@ loadConfig = do
 
 loadState :: IO State
 loadState = do
-  let entries = [] :: Entries
+  let entries = fromList [] :: Entries
   openMemoryState entries

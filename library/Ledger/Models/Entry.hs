@@ -17,12 +17,13 @@ import           Data.Acid.Advanced   (Event (QueryEvent, UpdateEvent),
                                        IsAcidic,
                                        Method (MethodResult, MethodState),
                                        acidEvents)
+import           Data.Map             (Map)
 import           Data.SafeCopy        (SafeCopy, contain, getCopy, putCopy,
                                        safeGet, safePut)
 import           Data.Time            (UTCTime)
 import           Data.Typeable        (Typeable)
 
-type Entries = [Entry]
+type Entries = Map Integer Entry
 
 data Entry = Entry
   { amount  :: Rational
