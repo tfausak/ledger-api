@@ -91,7 +91,11 @@ var EntryRow = React.createClass({
       <tr>
         <td>{this.props.number}</td>
         <td>${this.props.amount.toFixed(2)}</td>
-        <td>{this.props.date.toISOString()}</td>
+        <td>
+          <time datetime="{this.props.date.toISOString()}">
+            {this.props.date.toLocaleString()}
+          </time>
+        </td>
       </tr>
     );
   }
