@@ -109,7 +109,9 @@ var EntryTable = React.createClass({
 
 var EntryRow = React.createClass({
   handleClick: function(e) {
-    this.props.onEntryClick(this.props.number);
+    if (window.confirm('Are you sure you want to delete this entry?')) {
+      this.props.onEntryClick(this.props.number);
+    }
     e.preventDefault();
   },
   render: function() {
