@@ -27,7 +27,7 @@ import           System.Environment       (getArgs)
 main :: IO ()
 main = do
   config <- loadConfig
-  port <- require config "port"
+  port <- require config "warp.port"
   state <- loadState config
   run port (application state)
 
