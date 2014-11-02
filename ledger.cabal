@@ -37,6 +37,7 @@ data-files:
     ledger.html
     ledger.css
     ledger.jsx
+    ledger.manifest
     react-0.12.0.js
     superagent-0.20.0.js
 data-dir: data

@@ -23,6 +23,7 @@ route request =
         ["jsx.js"] -> static method "JSXTransformer-0.12.0.js" "application/javascript"
         ["ledger.css"] -> static method "ledger.css" "text/css"
         ["ledger.jsx"] -> static method "ledger.jsx" "text/jsx"
+        ["ledger.manifest"] -> static method "ledger.manifest" "text/cache-manifest"
         ["react.js"] -> static method "react-0.12.0.js" "application/javascript"
         ["superagent.js"] -> static method "superagent-0.20.0.js" "application/javascript"
 
