@@ -60,6 +60,7 @@ library
         containers ==0.5.*,
         http-types ==0.8.*,
         mtl ==2.*,
+        network ==2.*,
         safecopy ==0.8.*,
         text ==1.*,
         time ==1.*,
