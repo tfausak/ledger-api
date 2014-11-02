@@ -1,0 +1,8 @@
+.cabal-sandbox/
+.git/
+dist/
+state/
+tmp/
+.gitattributes
+.gitignore
+cabal.sandbox.config
