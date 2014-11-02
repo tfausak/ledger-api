@@ -20,16 +20,17 @@ import           Data.Configurator        (Worth (Required), load, lookup,
 import           Data.Configurator.Types  (Config)
 import           Data.Map                 (fromList)
 import           Network                  (PortID (PortNumber, UnixSocket))
-import           Network.Wai.Handler.Warp (run)
+import           Network.Wai.Handler.Warp (Settings, defaultSettings,
+                                           runSettings, setPort)
 import           Prelude                  hiding (lookup)
 import           System.Environment       (getArgs)
 
 main :: IO ()
 main = do
   config <- loadConfig
-  port <- require config "warp.port"
+  settings <- loadSettings config
   state <- loadState config
-  run port (application state)
+  runSettings settings (application state)
 
 loadConfig :: IO Config
 loadConfig = do
@@ -37,6 +38,11 @@ loadConfig = do
   names <- getArgs
   let paths = map Required (name : names)
   load paths
+
+loadSettings :: Config -> IO Settings
+loadSettings config = do
+  port <- require config "warp.port"
+  return (setPort port defaultSettings)
 
 loadState :: Config -> IO State
 loadState config = do
