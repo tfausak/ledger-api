@@ -1,5 +1,7 @@
 # Changelog
 
+## v0.1.1 (2014-11-02)
+
 - Added HTTP basic authentication.
 - Added the ability use local or remote state.
 
