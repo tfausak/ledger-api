@@ -34,7 +34,7 @@ main = do
 
 loadConfig :: IO Config
 loadConfig = do
-  name <- getDataFileName "default.cfg"
+  name <- getDataFileName "ledger.cfg"
   names <- getArgs
   let paths = map Required (name : names)
   load paths
