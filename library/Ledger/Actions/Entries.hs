@@ -103,6 +103,7 @@ putEntry = do
                 oldEntries <- query state QueryEntries
                 let newEntry = oldEntry
                       { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
+                      , Entry.name = EntryRequest.name entryRequest
                       }
                 let newEntries = Map.insert
                       (Entry.number oldEntry) newEntry oldEntries
