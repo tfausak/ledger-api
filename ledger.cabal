@@ -38,9 +38,9 @@ data-files:
     static/apple-touch-startup-image-768x1004.png
     static/apple-touch-startup-image-768x1004@2x.png
     static/favicon.ico
-    static/JSXTransformer-0.12.0.js
-    static/react-0.12.0.js
-    static/superagent-0.20.0.js
+    vendor/JSXTransformer-0.12.0.js
+    vendor/react-0.12.0.js
+    vendor/superagent-0.20.0.js
 data-dir: data
 extra-source-files:
     CHANGELOG.md

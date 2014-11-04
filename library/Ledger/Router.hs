@@ -20,12 +20,12 @@ route request =
       method = requestMethod request
   in  case path of
         [] -> static method "ledger.html" "text/html"
-        ["jsx.js"] -> static method "static/JSXTransformer-0.12.0.js" "application/javascript"
+        ["jsx.js"] -> static method "vendor/JSXTransformer-0.12.0.js" "application/javascript"
         ["ledger.css"] -> static method "ledger.css" "text/css"
         ["ledger.jsx"] -> static method "ledger.jsx" "text/jsx"
         ["ledger.manifest"] -> static method "ledger.manifest" "text/cache-manifest"
-        ["react.js"] -> static method "static/react-0.12.0.js" "application/javascript"
-        ["superagent.js"] -> static method "static/superagent-0.20.0.js" "application/javascript"
+        ["react.js"] -> static method "vendor/react-0.12.0.js" "application/javascript"
+        ["superagent.js"] -> static method "vendor/superagent-0.20.0.js" "application/javascript"
 
         ["apple-touch-icon-precomposed-57.png"] -> static method "static/apple-touch-icon-precomposed-57.png" "image/png"
         ["apple-touch-icon-precomposed-57@2x.png"] -> static method "static/apple-touch-icon-precomposed-57@2x.png" "image/png"
