@@ -13,7 +13,7 @@ var EntryBox = React.createClass({
       this.setState({entries: [this.transform(response.body)].concat(this.state.entries)})
     }.bind(this));
   },
-  handleEntryClick: function (number) {
+  handleEntryDelete: function (number) {
     superagent.del('/api/entries/' + number, function () {
       this.getEntries();
     }.bind(this));
@@ -36,7 +36,7 @@ var EntryBox = React.createClass({
         <EntryForm onEntrySubmit={this.handleEntrySubmit} />
         <EntryTable
           entries={this.state.entries}
-          onEntryClick={this.handleEntryClick}
+          onEntryDelete={this.handleEntryDelete}
         />
       </div>
     );
@@ -71,8 +71,8 @@ var EntryForm = React.createClass({
 });
 
 var EntryTable = React.createClass({
-  handleEntryClick: function(number) {
-    this.props.onEntryClick(number);
+  handleEntryDelete: function(number) {
+    this.props.onEntryDelete(number);
   },
   render: function() {
     var entryRows = this.props.entries.sort(function (a, b) {
@@ -85,7 +85,7 @@ var EntryTable = React.createClass({
           key={entry.key}
           name={entry.name}
           number={entry.number}
-          onEntryClick={this.handleEntryClick}
+          onEntryDelete={this.handleEntryDelete}
         />
       );
     }.bind(this));
@@ -108,9 +108,9 @@ var EntryTable = React.createClass({
 });
 
 var EntryRow = React.createClass({
-  handleClick: function(e) {
+  handleDeleteClick: function(e) {
     if (window.confirm('Are you sure you want to delete this entry?')) {
-      this.props.onEntryClick(this.props.number);
+      this.props.onEntryDelete(this.props.number);
     }
     e.preventDefault();
   },
@@ -126,7 +126,7 @@ var EntryRow = React.createClass({
         </td>
         <td>{this.props.name}</td>
         <td>
-          <button onClick={this.handleClick}>Delete</button>
+          <button onClick={this.handleDeleteClick}>Delete</button>
         </td>
       </tr>
     );
