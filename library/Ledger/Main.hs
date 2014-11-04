@@ -19,7 +19,7 @@ import           Data.Configurator        (Worth (Required), load, lookup,
                                            require)
 import           Data.Configurator.Types  (Config)
 import           Data.Map                 (fromList)
-import           Network                  (PortID (PortNumber, UnixSocket))
+import           Network                  (PortID (PortNumber))
 import           Network.Wai.Handler.Warp (Settings, defaultSettings,
                                            runSettings, setPort)
 import           Prelude                  hiding (lookup)
@@ -51,19 +51,15 @@ loadState config = do
         Nothing -> skipAuthenticationPerform
         Just secret -> sharedSecretPerform secret
 
-  maybeSocket <- lookup config "acid.socket"
-  case maybeSocket of
-    Just socket -> openRemoteState authenticate "" (UnixSocket socket)
+  maybeHost <- lookup config "acid.host"
+  case maybeHost of
+    Just host -> do
+      port <- require config "acid.port"
+      let number = fromIntegral (port :: Int)
+      openRemoteState authenticate host (PortNumber number)
     Nothing -> do
-      maybeHost <- lookup config "acid.host"
-      case maybeHost of
-        Just host -> do
-          port <- require config "acid.port"
-          let number = fromIntegral (port :: Int)
-          openRemoteState authenticate host (PortNumber number)
-        Nothing -> do
-          let entries = fromList [] :: Entries
-          maybeDirectory <- lookup config "acid.directory"
-          case maybeDirectory of
-            Just directory -> openLocalStateFrom directory entries
-            Nothing -> openMemoryState entries
+      let entries = fromList [] :: Entries
+      maybeDirectory <- lookup config "acid.directory"
+      case maybeDirectory of
+        Just directory -> openLocalStateFrom directory entries
+        Nothing -> openMemoryState entries
