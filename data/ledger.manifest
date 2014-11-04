@@ -8,4 +8,4 @@ react.js
 superagent.js
 
 NETWORK:
-entries
+api/entries

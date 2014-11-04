@@ -58,7 +58,7 @@ postEntries = do
 getEntry :: Action
 getEntry = do
   request <- asks fst
-  let parameter = pathInfo request !! 1
+  let parameter = pathInfo request !! 2
   let maybeNumber = readMaybe (unpack parameter)
   case maybeNumber of
     Nothing -> notFound
@@ -78,7 +78,7 @@ putEntry :: Action
 putEntry = do
   -- get entry number from request parameters
   request <- asks fst
-  let parameter = pathInfo request !! 1
+  let parameter = pathInfo request !! 2
   let maybeNumber = readMaybe (unpack parameter)
   case maybeNumber of
     Nothing -> notFound
@@ -115,7 +115,7 @@ deleteEntry :: Action
 deleteEntry = do
   -- get entry number from request parameters
   request <- asks fst
-  let parameter = pathInfo request !! 1
+  let parameter = pathInfo request !! 2
   let maybeNumber = readMaybe (unpack parameter)
   case maybeNumber of
     Nothing -> notFound

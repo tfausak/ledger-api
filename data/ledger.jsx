@@ -9,12 +9,12 @@ var EntryBox = React.createClass({
     };
   },
   handleEntrySubmit: function(entry) {
-    superagent.post('/entries', entry, function(response) {
+    superagent.post('/api/entries', entry, function(response) {
       this.setState({entries: [this.transform(response.body)].concat(this.state.entries)})
     }.bind(this));
   },
   handleEntryClick: function (number) {
-    superagent.del('/entries/' + number, function () {
+    superagent.del('/api/entries/' + number, function () {
       this.getEntries();
     }.bind(this));
   },
@@ -25,7 +25,7 @@ var EntryBox = React.createClass({
     this.getEntries();
   },
   getEntries: function() {
-    superagent.get('/entries', function(response) {
+    superagent.get('/api/entries', function(response) {
       this.setState({entries: response.body.map(this.transform)});
     }.bind(this));
   },

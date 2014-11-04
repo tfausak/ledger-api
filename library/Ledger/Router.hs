@@ -46,11 +46,11 @@ route request =
         ["apple-touch-startup-image-768x1004@2x.png"] -> static method "static/apple-touch-startup-image-768x1004@2x.png" "image/png"
         ["favicon.ico"] -> static method "static/favicon.ico" "image/x-icon"
 
-        ["entries"] -> case method of
+        ["api", "entries"] -> case method of
           "GET" -> Actions.getEntries
           "POST" -> Actions.postEntries
           _ -> Actions.notAllowed
-        ["entries", _] -> case method of
+        ["api", "entries", _] -> case method of
           "GET" -> Actions.getEntry
           "PUT" -> Actions.putEntry
           "DELETE" -> Actions.deleteEntry
