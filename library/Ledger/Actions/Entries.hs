@@ -26,7 +26,8 @@ import           Data.Maybe                   (isNothing)
 import           Data.Text                    (unpack)
 import           Data.Time                    (getCurrentTime)
 import           Network.HTTP.Types           (status200)
-import           Network.Wai                  (pathInfo, strictRequestBody)
+import           Network.Wai                  (Request, pathInfo,
+                                               strictRequestBody)
 import           Text.Read                    (readMaybe)
 
 getEntries :: Action
@@ -38,21 +39,14 @@ getEntries = do
 
 postEntries :: Action
 postEntries = do
-  request <- asks fst
-  body <- liftIO (strictRequestBody request)
-  let maybeEntryRequest = decode body
+  maybeEntryRequest <- decodeEntry
   case maybeEntryRequest of
     Nothing -> badRequest
     Just entryRequest -> do
-      state <- asks snd
-      entry <- liftIO $ do
-        oldEntries <- query state QueryEntries
-        entry <- toEntry oldEntries entryRequest
-        let newEntries = Map.insert (Entry.number entry) entry oldEntries
-        update state (WriteEntries newEntries)
-        return entry
+      entry <- createEntry entryRequest
       let entryResponse = toResponse entry
-      return (json status200 [] entryResponse)
+      let response = json status200 [] entryResponse
+      return response
 
 getEntry :: Action
 getEntry = do
@@ -145,3 +139,20 @@ findEntries = do
   allEntries <- liftIO (query state QueryEntries)
   let entries = filter (isNothing . Entry.deleted) (Map.elems allEntries)
   return entries
+
+decodeEntry :: ReaderT (Request, a) IO (Maybe EntryRequest.EntryRequest)
+decodeEntry = do
+  request <- asks fst
+  body <- liftIO (strictRequestBody request)
+  let maybeEntryRequest = decode body
+  return maybeEntryRequest
+
+createEntry :: EntryRequest.EntryRequest -> ReaderT (a, State) IO Entry.Entry
+createEntry entryRequest = do
+  state <- asks snd
+  liftIO $ do
+    oldEntries <- query state QueryEntries
+    entry <- toEntry oldEntries entryRequest
+    let newEntries = Map.insert (Entry.number entry) entry oldEntries
+    update state (WriteEntries newEntries)
+    return entry
