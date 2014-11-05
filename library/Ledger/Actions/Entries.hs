@@ -75,9 +75,11 @@ deleteEntry = do
   case maybeEntry of
     Nothing -> notFound
     Just entry -> do
-      destroyEntry entry
+      _ <- destroyEntry entry
       let response = json status200 [] Null
       return response
+
+--
 
 findEntries :: ReaderT (a, State) IO [Entry.Entry]
 findEntries = do
@@ -126,24 +128,23 @@ findEntry maybeNumber = case maybeNumber of
 
 updateEntry :: Entry.Entry -> EntryRequest.EntryRequest -> ReaderT (a, State) IO Entry.Entry
 updateEntry entry entryRequest = do
-  state <- asks snd
-  liftIO $ do
-    oldEntries <- query state QueryEntries
-    let newEntry = entry
-          { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
-          , Entry.name = EntryRequest.name entryRequest
-          }
-    let newEntries = Map.insert (Entry.number entry) newEntry oldEntries
-    update state (WriteEntries newEntries)
-    return newEntry
+  let newEntry = entry
+        { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
+        , Entry.name = EntryRequest.name entryRequest
+        }
+  insertEntry newEntry
 
-destroyEntry :: Entry.Entry -> ReaderT (a, State) IO ()
+destroyEntry :: Entry.Entry -> ReaderT (a, State) IO Entry.Entry
 destroyEntry entry = do
+  now <- liftIO getCurrentTime
+  let newEntry = entry { Entry.deleted = Just now }
+  insertEntry newEntry
+
+insertEntry :: Entry.Entry -> ReaderT (a, State) IO Entry.Entry
+insertEntry entry = do
   state <- asks snd
   liftIO $ do
     oldEntries <- query state QueryEntries
-    now <- getCurrentTime
-    let newEntry = entry { Entry.deleted = Just now }
-    let newEntries = Map.insert (Entry.number entry) newEntry oldEntries
+    let newEntries = Map.insert (Entry.number entry) entry oldEntries
     update state (WriteEntries newEntries)
-    return ()
+    return entry
