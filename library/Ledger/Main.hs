@@ -33,7 +33,7 @@ main = do
   config <- loadConfig
   settings <- loadSettings config
   state <- loadState config
-  runSettings settings (application state)
+  runSettings settings (application config state)
 
 loadConfig :: IO Config
 loadConfig = do

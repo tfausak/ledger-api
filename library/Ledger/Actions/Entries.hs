@@ -17,7 +17,7 @@ import           Ledger.State                 (State)
 import           Ledger.Utilities             (json)
 
 import           Control.Monad.IO.Class       (liftIO)
-import           Control.Monad.Reader         (ReaderT, asks)
+import           Control.Monad.Reader         (ReaderT, ask)
 import           Data.Acid                    (query, update)
 import           Data.Aeson                   (Value (Null), decode)
 import           Data.List                    (find)
@@ -81,23 +81,23 @@ deleteEntry = do
 
 --
 
-findEntries :: ReaderT (a, State) IO [Entry.Entry]
+findEntries :: ReaderT (a, b, State) IO [Entry.Entry]
 findEntries = do
-  state <- asks snd
+  (_, _, state) <- ask
   allEntries <- liftIO (query state QueryEntries)
   let entries = filter (isNothing . Entry.deleted) (Map.elems allEntries)
   return entries
 
-decodeEntry :: ReaderT (Request, a) IO (Maybe EntryRequest.EntryRequest)
+decodeEntry :: ReaderT (Request, a, b) IO (Maybe EntryRequest.EntryRequest)
 decodeEntry = do
-  request <- asks fst
+  (request, _, _) <- ask
   body <- liftIO (strictRequestBody request)
   let maybeEntryRequest = decode body
   return maybeEntryRequest
 
-createEntry :: EntryRequest.EntryRequest -> ReaderT (a, State) IO Entry.Entry
+createEntry :: EntryRequest.EntryRequest -> ReaderT (a, b, State) IO Entry.Entry
 createEntry entryRequest = do
-  state <- asks snd
+  (_, _, state) <- ask
   liftIO $ do
     oldEntries <- query state QueryEntries
     entry <- toEntry oldEntries entryRequest
@@ -111,14 +111,14 @@ respondWithEntry entry = do
   let response = json status200 [] entryResponse
   return response
 
-getEntryNumber :: ReaderT (Request, a) IO (Maybe Integer)
+getEntryNumber :: ReaderT (Request, a, b) IO (Maybe Integer)
 getEntryNumber = do
-  request <- asks fst
+  (request, _, _) <- ask
   let parameter = pathInfo request !! 2
   let maybeNumber = readMaybe (unpack parameter)
   return maybeNumber
 
-findEntry :: Maybe Integer -> ReaderT (a, State) IO (Maybe Entry.Entry)
+findEntry :: Maybe Integer -> ReaderT (a, b, State) IO (Maybe Entry.Entry)
 findEntry maybeNumber = case maybeNumber of
   Nothing -> return Nothing
   Just number -> do
@@ -126,7 +126,7 @@ findEntry maybeNumber = case maybeNumber of
     let maybeEntry = find ((number ==) . Entry.number) entries
     return maybeEntry
 
-updateEntry :: Entry.Entry -> EntryRequest.EntryRequest -> ReaderT (a, State) IO Entry.Entry
+updateEntry :: Entry.Entry -> EntryRequest.EntryRequest -> ReaderT (a, b, State) IO Entry.Entry
 updateEntry entry entryRequest = do
   let newEntry = entry
         { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
@@ -134,15 +134,15 @@ updateEntry entry entryRequest = do
         }
   insertEntry newEntry
 
-destroyEntry :: Entry.Entry -> ReaderT (a, State) IO Entry.Entry
+destroyEntry :: Entry.Entry -> ReaderT (a, b, State) IO Entry.Entry
 destroyEntry entry = do
   now <- liftIO getCurrentTime
   let newEntry = entry { Entry.deleted = Just now }
   insertEntry newEntry
 
-insertEntry :: Entry.Entry -> ReaderT (a, State) IO Entry.Entry
+insertEntry :: Entry.Entry -> ReaderT (a, b, State) IO Entry.Entry
 insertEntry entry = do
-  state <- asks snd
+  (_, _, state) <- ask
   liftIO $ do
     oldEntries <- query state QueryEntries
     let newEntries = Map.insert (Entry.number entry) entry oldEntries
