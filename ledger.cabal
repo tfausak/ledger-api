@@ -8,9 +8,9 @@ copyright: 2014 Taylor Fausak <taylor@fausak.me>
 maintainer: Taylor Fausak <taylor@fausak.me>
 homepage: https://github.com/tfausak/ledger
 bug-reports: https://github.com/tfausak/ledger/issues
-synopsis: TODO
+synopsis: Watch your money fly away.
 description:
-    TODO
+    https://github.com/tfausak/ledger#readme
 category: Web
 author: Taylor Fausak <taylor@fausak.me>
 tested-with: GHC ==7.8.*
