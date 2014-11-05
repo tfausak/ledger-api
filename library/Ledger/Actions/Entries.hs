@@ -56,41 +56,17 @@ getEntry = do
 
 putEntry :: Action
 putEntry = do
-  -- get entry number from request parameters
-  request <- asks fst
-  let parameter = pathInfo request !! 2
-  let maybeNumber = readMaybe (unpack parameter)
-  case maybeNumber of
+  maybeNumber <- getEntryNumber
+  maybeEntry <- findEntry maybeNumber
+  case maybeEntry of
     Nothing -> notFound
-    Just number -> do
-      -- find entry in state
-      state <- asks snd
-      allEntries <- liftIO (query state QueryEntries)
-      let entries = filter
-            (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
-      let maybeEntry = find (\ entry -> Entry.number entry == number) entries
-      case maybeEntry of
-        Nothing -> notFound
-        Just oldEntry -> do
-          -- parse entry from request body
-          body <- liftIO (strictRequestBody request)
-          let maybeEntryRequest = decode body
-          case maybeEntryRequest of
-            Nothing -> badRequest
-            Just entryRequest -> do
-              -- create a new updated entry
-              entry <- liftIO $ do
-                oldEntries <- query state QueryEntries
-                let newEntry = oldEntry
-                      { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
-                      , Entry.name = EntryRequest.name entryRequest
-                      }
-                let newEntries = Map.insert
-                      (Entry.number oldEntry) newEntry oldEntries
-                update state (WriteEntries newEntries)
-                return newEntry
-              let entryResponse = toResponse entry
-              return (json status200 [] entryResponse)
+    Just oldEntry -> do
+      maybeEntryRequest <- decodeEntry
+      case maybeEntryRequest of
+        Nothing -> badRequest
+        Just entryRequest -> do
+          newEntry <- updateEntry oldEntry entryRequest
+          respondWithEntry newEntry
 
 deleteEntry :: Action
 deleteEntry = do
@@ -164,3 +140,16 @@ findEntry maybeNumber = case maybeNumber of
     entries <- findEntries
     let maybeEntry = find ((number ==) . Entry.number) entries
     return maybeEntry
+
+updateEntry :: Entry.Entry -> EntryRequest.EntryRequest -> ReaderT (a, State) IO Entry.Entry
+updateEntry entry entryRequest = do
+  state <- asks snd
+  liftIO $ do
+    oldEntries <- query state QueryEntries
+    let newEntry = entry
+          { Entry.amount = realToFrac (EntryRequest.amount entryRequest)
+          , Entry.name = EntryRequest.name entryRequest
+          }
+    let newEntries = Map.insert (Entry.number entry) newEntry oldEntries
+    update state (WriteEntries newEntries)
+    return newEntry
