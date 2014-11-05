@@ -70,31 +70,14 @@ putEntry = do
 
 deleteEntry :: Action
 deleteEntry = do
-  -- get entry number from request parameters
-  request <- asks fst
-  let parameter = pathInfo request !! 2
-  let maybeNumber = readMaybe (unpack parameter)
-  case maybeNumber of
+  maybeNumber <- getEntryNumber
+  maybeEntry <- findEntry maybeNumber
+  case maybeEntry of
     Nothing -> notFound
-    Just number -> do
-      -- find entry in state
-      state <- asks snd
-      allEntries <- liftIO (query state QueryEntries)
-      let entries = filter
-            (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
-      let maybeEntry = find (\ entry -> Entry.number entry == number) entries
-      case maybeEntry of
-        Nothing -> notFound
-        Just oldEntry -> do
-          -- delete the entry
-          _ <- liftIO $ do
-            oldEntries <- query state QueryEntries
-            now <- getCurrentTime
-            let newEntry = oldEntry { Entry.deleted = Just now }
-            let newEntries = Map.insert
-                  (Entry.number oldEntry) newEntry oldEntries
-            update state (WriteEntries newEntries)
-          return (json status200 [] Null)
+    Just entry -> do
+      destroyEntry entry
+      let response = json status200 [] Null
+      return response
 
 findEntries :: ReaderT (a, State) IO [Entry.Entry]
 findEntries = do
@@ -153,3 +136,14 @@ updateEntry entry entryRequest = do
     let newEntries = Map.insert (Entry.number entry) newEntry oldEntries
     update state (WriteEntries newEntries)
     return newEntry
+
+destroyEntry :: Entry.Entry -> ReaderT (a, State) IO ()
+destroyEntry entry = do
+  state <- asks snd
+  liftIO $ do
+    oldEntries <- query state QueryEntries
+    now <- getCurrentTime
+    let newEntry = entry { Entry.deleted = Just now }
+    let newEntries = Map.insert (Entry.number entry) newEntry oldEntries
+    update state (WriteEntries newEntries)
+    return ()
