@@ -44,28 +44,15 @@ postEntries = do
     Nothing -> badRequest
     Just entryRequest -> do
       entry <- createEntry entryRequest
-      let entryResponse = toResponse entry
-      let response = json status200 [] entryResponse
-      return response
+      respondWithEntry entry
 
 getEntry :: Action
 getEntry = do
-  request <- asks fst
-  let parameter = pathInfo request !! 2
-  let maybeNumber = readMaybe (unpack parameter)
-  case maybeNumber of
+  maybeNumber <- getEntryNumber
+  maybeEntry <- findEntry maybeNumber
+  case maybeEntry of
     Nothing -> notFound
-    Just number -> do
-      state <- asks snd
-      allEntries <- liftIO (query state QueryEntries)
-      let entries = filter
-            (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
-      let maybeEntry = find (\ entry -> Entry.number entry == number) entries
-      case maybeEntry of
-        Nothing -> notFound
-        Just entry -> do
-          let entryResponse = toResponse entry
-          return (json status200 [] entryResponse)
+    Just entry -> respondWithEntry entry
 
 putEntry :: Action
 putEntry = do
@@ -156,3 +143,24 @@ createEntry entryRequest = do
     let newEntries = Map.insert (Entry.number entry) entry oldEntries
     update state (WriteEntries newEntries)
     return entry
+
+respondWithEntry :: Entry.Entry -> Action
+respondWithEntry entry = do
+  let entryResponse = toResponse entry
+  let response = json status200 [] entryResponse
+  return response
+
+getEntryNumber :: ReaderT (Request, a) IO (Maybe Integer)
+getEntryNumber = do
+  request <- asks fst
+  let parameter = pathInfo request !! 2
+  let maybeNumber = readMaybe (unpack parameter)
+  return maybeNumber
+
+findEntry :: Maybe Integer -> ReaderT (a, State) IO (Maybe Entry.Entry)
+findEntry maybeNumber = case maybeNumber of
+  Nothing -> return Nothing
+  Just number -> do
+    entries <- findEntries
+    let maybeEntry = find ((number ==) . Entry.number) entries
+    return maybeEntry
