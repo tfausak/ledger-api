@@ -4,6 +4,9 @@ module Ledger.Main
   ( main
   , loadConfig
   , loadState
+  , loadRemoteState
+  , loadLocalState
+  , loadMemoryState
   ) where
 
 import           Ledger.Application       (application)
@@ -46,20 +49,44 @@ loadSettings config = do
 
 loadState :: Config -> IO State
 loadState config = do
-  maybeSecret <- lookup config "acid.secret"
-  let authenticate = case maybeSecret of
-        Nothing -> skipAuthenticationPerform
-        Just secret -> sharedSecretPerform secret
+  maybeRemoteState <- loadRemoteState config
+  case maybeRemoteState of
+    Just state -> return state
+    Nothing -> do
+      maybeLocalState <- loadLocalState config
+      case maybeLocalState of
+        Just state -> return state
+        Nothing -> loadMemoryState
 
+loadRemoteState :: Config -> IO (Maybe State)
+loadRemoteState config = do
   maybeHost <- lookup config "acid.host"
   case maybeHost of
+    Nothing -> return Nothing
     Just host -> do
-      port <- require config "acid.port"
-      let number = fromIntegral (port :: Int)
-      openRemoteState authenticate host (PortNumber number)
-    Nothing -> do
+      maybePort <- lookup config "acid.port"
+      case maybePort of
+        Nothing -> return Nothing
+        Just port -> do
+          maybeSecret <- lookup config "acid.secret"
+          let authenticate = case maybeSecret of
+                Nothing -> skipAuthenticationPerform
+                Just secret -> sharedSecretPerform secret
+          let number = fromIntegral (port :: Int)
+          state <- openRemoteState authenticate host (PortNumber number)
+          return (Just state)
+
+loadLocalState :: Config -> IO (Maybe State)
+loadLocalState config = do
+  maybeDirectory <- lookup config "acid.directory"
+  case maybeDirectory of
+    Nothing -> return Nothing
+    Just directory -> do
       let entries = fromList [] :: Entries
-      maybeDirectory <- lookup config "acid.directory"
-      case maybeDirectory of
-        Just directory -> openLocalStateFrom directory entries
-        Nothing -> openMemoryState entries
+      state <- openLocalStateFrom directory entries
+      return (Just state)
+
+loadMemoryState :: IO State
+loadMemoryState = do
+  let entries = fromList [] :: Entries
+  openMemoryState entries
