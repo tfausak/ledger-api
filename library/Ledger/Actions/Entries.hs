@@ -13,10 +13,11 @@ import qualified Ledger.Models.Entry          as Entry
 import           Ledger.Models.Entry.Request  (toEntry)
 import qualified Ledger.Models.Entry.Request  as EntryRequest
 import           Ledger.Models.Entry.Response (toResponse)
+import           Ledger.State                 (State)
 import           Ledger.Utilities             (json)
 
 import           Control.Monad.IO.Class       (liftIO)
-import           Control.Monad.Reader         (asks)
+import           Control.Monad.Reader         (ReaderT, asks)
 import           Data.Acid                    (query, update)
 import           Data.Aeson                   (Value (Null), decode)
 import           Data.List                    (find)
@@ -30,12 +31,10 @@ import           Text.Read                    (readMaybe)
 
 getEntries :: Action
 getEntries = do
-  state <- asks snd
-  allEntries <- liftIO (query state QueryEntries)
-  let entries = filter
-        (\ entry -> isNothing (Entry.deleted entry)) (Map.elems allEntries)
+  entries <- findEntries
   let entryResponses = map toResponse entries
-  return (json status200 [] entryResponses)
+  let response = json status200 [] entryResponses
+  return response
 
 postEntries :: Action
 postEntries = do
@@ -139,3 +138,10 @@ deleteEntry = do
                   (Entry.number oldEntry) newEntry oldEntries
             update state (WriteEntries newEntries)
           return (json status200 [] Null)
+
+findEntries :: ReaderT (a, State) IO [Entry.Entry]
+findEntries = do
+  state <- asks snd
+  allEntries <- liftIO (query state QueryEntries)
+  let entries = filter (isNothing . Entry.deleted) (Map.elems allEntries)
+  return entries
