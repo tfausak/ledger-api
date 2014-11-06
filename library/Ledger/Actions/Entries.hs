@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Ledger.Actions.Entries
   ( getEntries
   , postEntries
@@ -6,7 +8,8 @@ module Ledger.Actions.Entries
   , deleteEntry
   ) where
 
-import           Ledger.Actions.Common        (Action, badRequest, notFound)
+import           Ledger.Actions.Common        (Action, badRequest, forbidden,
+                                               notFound)
 import           Ledger.Models.Entry          (QueryEntries (QueryEntries),
                                                WriteEntries (WriteEntries))
 import qualified Ledger.Models.Entry          as Entry
@@ -20,25 +23,27 @@ import           Control.Monad.IO.Class       (liftIO)
 import           Control.Monad.Reader         (ReaderT, ask)
 import           Data.Acid                    (query, update)
 import           Data.Aeson                   (Value (Null), decode)
+import           Data.ByteString              (ByteString)
+import qualified Data.Configurator            as Configurator
 import           Data.List                    (find)
 import qualified Data.Map                     as Map
 import           Data.Maybe                   (isNothing)
 import           Data.Text                    (unpack)
 import           Data.Time                    (getCurrentTime)
 import           Network.HTTP.Types           (status200)
-import           Network.Wai                  (Request, pathInfo,
+import           Network.Wai                  (Request, pathInfo, queryString,
                                                strictRequestBody)
 import           Text.Read                    (readMaybe)
 
 getEntries :: Action
-getEntries = do
+getEntries = authenticate $ do
   entries <- findEntries
   let entryResponses = map toResponse entries
   let response = json status200 [] entryResponses
   return response
 
 postEntries :: Action
-postEntries = do
+postEntries = authenticate $ do
   maybeEntryRequest <- decodeEntry
   case maybeEntryRequest of
     Nothing -> badRequest
@@ -47,7 +52,7 @@ postEntries = do
       respondWithEntry entry
 
 getEntry :: Action
-getEntry = do
+getEntry = authenticate $ do
   maybeNumber <- getEntryNumber
   maybeEntry <- findEntry maybeNumber
   case maybeEntry of
@@ -55,7 +60,7 @@ getEntry = do
     Just entry -> respondWithEntry entry
 
 putEntry :: Action
-putEntry = do
+putEntry = authenticate $ do
   maybeNumber <- getEntryNumber
   maybeEntry <- findEntry maybeNumber
   case maybeEntry of
@@ -69,7 +74,7 @@ putEntry = do
           respondWithEntry newEntry
 
 deleteEntry :: Action
-deleteEntry = do
+deleteEntry = authenticate $ do
   maybeNumber <- getEntryNumber
   maybeEntry <- findEntry maybeNumber
   case maybeEntry of
@@ -80,6 +85,18 @@ deleteEntry = do
       return response
 
 --
+
+authenticate :: Action -> Action
+authenticate action = do
+  (request, config, _) <- ask
+  maybeKey <- liftIO (Configurator.lookup config "ledger.key")
+  case (maybeKey :: Maybe ByteString) of
+    Nothing -> action
+    Just key -> do
+      let parameters = queryString request
+      case lookup "key" parameters of
+        Just (Just k) -> if k == key then action else forbidden
+        _ -> forbidden
 
 findEntries :: ReaderT (a, b, State) IO [Entry.Entry]
 findEntries = do

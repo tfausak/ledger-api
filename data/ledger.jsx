@@ -9,28 +9,28 @@ var EntryBox = React.createClass({
     };
   },
   handleEntrySubmit: function(entry) {
-    superagent.post('/api/entries', entry, function(response) {
+    superagent.post('/api/entries?key=' + this.state.key, entry, function(response) {
       this.setState({entries: [this.transform(response.body)].concat(this.state.entries)})
     }.bind(this));
   },
   handleEntryDelete: function (number) {
-    superagent.del('/api/entries/' + number, function () {
+    superagent.del('/api/entries/' + number + '?key=' + this.state.key, function () {
       this.getEntries();
     }.bind(this));
   },
   handleEntryUpdate: function(entry) {
-    superagent.put('/api/entries/' + entry.number, entry, function() {
+    superagent.put('/api/entries/' + entry.number + '?key=' + this.state.key, entry, function() {
       this.getEntries();
     }.bind(this));
   },
   getInitialState: function() {
-    return {entries: []}
+    return {entries: [], key: window.location.hash.substring(1)}
   },
   componentDidMount: function() {
     this.getEntries();
   },
   getEntries: function() {
-    superagent.get('/api/entries', function(response) {
+    superagent.get('/api/entries?key=' + this.state.key, function(response) {
       this.setState({entries: response.body.map(this.transform)});
     }.bind(this));
   },
