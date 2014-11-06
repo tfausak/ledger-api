@@ -60,15 +60,15 @@ loadState config = do
 
 loadRemoteState :: Config -> IO (Maybe State)
 loadRemoteState config = do
-  maybeHost <- lookup config "acid.host"
+  maybeHost <- lookup config "acid-state.host"
   case maybeHost of
     Nothing -> return Nothing
     Just host -> do
-      maybePort <- lookup config "acid.port"
+      maybePort <- lookup config "acid-state.port"
       case maybePort of
         Nothing -> return Nothing
         Just port -> do
-          maybeSecret <- lookup config "acid.secret"
+          maybeSecret <- lookup config "acid-state.secret"
           let authenticate = case maybeSecret of
                 Nothing -> skipAuthenticationPerform
                 Just secret -> sharedSecretPerform secret
@@ -78,7 +78,7 @@ loadRemoteState config = do
 
 loadLocalState :: Config -> IO (Maybe State)
 loadLocalState config = do
-  maybeDirectory <- lookup config "acid.directory"
+  maybeDirectory <- lookup config "acid-state.directory"
   case maybeDirectory of
     Nothing -> return Nothing
     Just directory -> do
