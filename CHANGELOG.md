@@ -2,6 +2,8 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.1.2 (2014-11-06)
+
 - Renamed "acid" configuration section to "acid-state".
 - Added the ability to authenticate API requests using a key.
 - Added the ability to edit entries from the UI.
