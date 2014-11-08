@@ -83,8 +83,8 @@ var EntryTable = React.createClass({
   handleEntryUpdate: function(entry) {
     this.props.onEntryUpdate(entry);
   },
-  render: function() {
-    var entryRows = this.props.entries.sort(function (a, b) {
+  renderEntryRows: function() {
+    return this.props.entries.sort(function (a, b) {
       return b.date - a.date;
     }).map(function (entry) {
       return (
@@ -99,6 +99,8 @@ var EntryTable = React.createClass({
         />
       );
     }.bind(this));
+  },
+  render: function() {
     return (
       <table>
         <thead>
@@ -110,7 +112,7 @@ var EntryTable = React.createClass({
           </tr>
         </thead>
         <tbody>
-          {entryRows}
+          {this.renderEntryRows()}
         </tbody>
       </table>
     );
