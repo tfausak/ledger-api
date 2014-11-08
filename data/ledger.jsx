@@ -56,28 +56,39 @@ var EntryBox = React.createClass({
 });
 
 var EntryForm = React.createClass({
-  handleSubmit: function(e) {
-    var amount = this.refs.amount.getDOMNode().valueAsNumber;
-    var name = this.refs.name.getDOMNode().value;
+  handleSubmit: function(event) {
+    var amountNode = this.refs.amount.getDOMNode();
+    var amount = amountNode.valueAsNumber;
+    var nameNode = this.refs.name.getDOMNode();
+    var name = nameNode.value;
+    var entry = {amount: amount, name: name, number: 0};
 
-    if (!isNaN(amount) && isFinite(amount) && name) {
-      var entry = {amount: amount, name: name, number: 0};
-      this.props.onEntrySubmit(entry);
-      this.refs.amount.getDOMNode().value = '';
-      this.refs.name.getDOMNode().value = '';
+    event.preventDefault();
+
+    if (isNaN(amount) || !isFinite(amount)) {
+      amountNode.focus();
+      return;
     }
 
-    e.preventDefault();
+    if (!name) {
+      nameNode.focus();
+      return;
+    }
+
+    amountNode.value = '';
+    amountNode.blur();
+    nameNode.value = '';
+    nameNode.blur();
+
+    this.props.onEntrySubmit(entry);
   },
   render: function() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <input type="number" ref="amount" />
-          <input ref="name" />
-          <input type="submit" />
-        </form>
-      </div>
+      <form onSubmit={this.handleSubmit}>
+        <input type="number" ref="amount" placeholder="Amount" />
+        <input ref="name" placeholder="Description" />
+        <input type="submit" />
+      </form>
     );
   }
 });
