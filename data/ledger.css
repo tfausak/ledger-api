@@ -1,3 +1,42 @@
-html {
+html,
+body {
   -webkit-text-size-adjust: 100%;
+  background: #f8f8f8;
+  color: #181818;
+  font: 100%/1.5em 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.masthead {
+  border-bottom: thin solid #e8e8e8;
+  color: #ba8baf;
+  font-size: 1.5em;
+  font-weight: bold;
+  line-height: 2em;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.balance {
+  border-bottom: thin solid #e8e8e8;
+  font-size: 1.5em;
+  line-height: 2em;
+  padding: 0 0.5em;
+  position: relative;
+}
+
+.balance-value {
+  position: absolute;
+  right: 0.5em;
+  top: 0;
+}
+
+.balance-value.positive {
+  color: #a1b56c;
+}
+
+.balance-value.negative {
+  color: #ab4642;
 }
