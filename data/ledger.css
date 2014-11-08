@@ -8,6 +8,17 @@ body {
   padding: 0;
 }
 
+input,
+button {
+  -webkit-appearance: none;
+  border: thin solid #d8d8d8;
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 1em;
+  height: 1.5em;
+  padding: 0 0.25em;
+}
+
 .masthead {
   border-bottom: thin solid #d8d8d8;
   color: #ba8baf;
@@ -63,18 +74,11 @@ body {
 
 .form-input,
 .form-submit {
-  -webkit-appearance: none;
-  border: thin solid #d8d8d8;
-  border-radius: 3px;
-  box-sizing: border-box;
   display: block;
-  font-size: 1em;
-  padding: 0 0.25em;
   width: 100%;
 }
 
 .form-input {
-  height: 1.5em;
   margin: 0 0 0.75em 0;
 }
 
@@ -84,4 +88,47 @@ body {
   cursor: pointer;
   font-weight: bold;
   height: 3em;
+}
+
+.entries {
+  border-top: thin solid #d8d8d8;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.entry {
+  border-bottom: thin solid #d8d8d8;
+  padding: 0.75em;
+}
+
+.entry-amount {
+  float: right;
+  text-align: right;
+  width: 20%;
+}
+
+.entry-amount input {
+  width: 100%;
+}
+
+.entry-name input {
+  width: 75%;
+}
+
+.entry-date {
+  color: #d8d8d8;
+  float: right;
+}
+
+.entry-edit,
+.entry-delete,
+.entry-save,
+.entry-cancel {
+  background: transparent;
+}
+
+.entry-delete,
+.entry-cancel {
+  color: #ab4642;
 }

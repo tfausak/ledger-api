@@ -39,7 +39,7 @@ var EntryBox = React.createClass({
       <div>
         <EntryBalance entries={this.state.entries} />
         <EntryForm onEntrySubmit={this.handleEntrySubmit} />
-        <EntryTable
+        <EntryList
           entries={this.state.entries}
           onEntryDelete={this.handleEntryDelete}
           onEntryUpdate={this.handleEntryUpdate}
@@ -130,19 +130,19 @@ var EntryForm = React.createClass({
   }
 });
 
-var EntryTable = React.createClass({
+var EntryList = React.createClass({
   handleEntryDelete: function(number) {
     this.props.onEntryDelete(number);
   },
   handleEntryUpdate: function(entry) {
     this.props.onEntryUpdate(entry);
   },
-  renderEntryRows: function() {
+  renderEntryElements: function() {
     return this.props.entries.sort(function (a, b) {
       return b.date - a.date;
     }).map(function (entry) {
       return (
-        <EntryRow
+        <EntryElement
           amount={entry.amount}
           date={entry.date}
           key={entry.key}
@@ -156,24 +156,14 @@ var EntryTable = React.createClass({
   },
   render: function() {
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.renderEntryRows()}
-        </tbody>
-      </table>
+      <ol className="entries">
+        {this.renderEntryElements()}
+      </ol>
     );
   }
 });
 
-var EntryRow = React.createClass({
+var EntryElement = React.createClass({
   getInitialState: function() {
     return {editing: false};
   },
@@ -205,42 +195,48 @@ var EntryRow = React.createClass({
   },
   renderShow: function() {
     return (
-      <tr>
-        <td>{this.props.number}</td>
-        <td>${this.props.amount.toFixed(2)}</td>
-        <td>
-          <time dateTime="{this.props.date.toISOString()}">
-            {this.props.date.toLocaleString()}
+      <li className="entry">
+        <div className="entry-amount">
+          ${this.props.amount.toFixed(2)}
+        </div>
+
+        <div className="entry-name">
+          {this.props.name}
+        </div>
+
+        <div className="entry-date">
+          <time dateTime={this.props.date.toISOString()}>
+            {this.props.date.toLocaleDateString()}
           </time>
-        </td>
-        <td>{this.props.name}</td>
-        <td>
-          <button onClick={this.handleEditClick}>Edit</button>
-          <button onClick={this.handleDeleteClick}>Delete</button>
-        </td>
-      </tr>
+        </div>
+
+        <button className="entry-edit" onClick={this.handleEditClick}>Edit</button>
+        <button className="entry-delete" onClick={this.handleDeleteClick}>Delete</button>
+      </li>
     );
   },
   renderEdit: function() {
     return (
-      <tr>
-        <td>{this.props.number}</td>
-        <td>
-          <input type="number" ref="amount" defaultValue={this.props.amount} />
-        </td>
-        <td>
-          <time dateTime="{this.props.date.toISOString()}">
-            {this.props.date.toLocaleString()}
-          </time>
-        </td>
-        <td>
-          <input ref="name" defaultValue={this.props.name} />
-        </td>
-        <td>
-          <button onClick={this.handleSaveClick}>Save</button>
-          <button onClick={this.handleCancelClick}>Cancel</button>
-        </td>
-      </tr>
+      <li className="entry">
+        <form onSubmit={this.handleSaveClick}>
+          <div className="entry-amount">
+            <input type="number" ref="amount" defaultValue={this.props.amount} />
+          </div>
+
+          <div className="entry-name">
+            <input ref="name" defaultValue={this.props.name} />
+          </div>
+
+          <div className="entry-date">
+            <time dateTime={this.props.date.toISOString()}>
+              {this.props.date.toLocaleDateString()}
+            </time>
+          </div>
+
+          <input type="submit" value="Save" className="entry-save" />
+          <button className="entry-cancel" onClick={this.handleCancelClick}>Cancel</button>
+        </form>
+      </li>
     );
   },
   render: function() {
