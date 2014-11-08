@@ -64,7 +64,7 @@ var EntryBalance = React.createClass({
   render: function() {
     return (
       <div className="balance">
-        <div class="balance-label">
+        <div className="balance-label">
           Balance
         </div>
 
@@ -105,11 +105,27 @@ var EntryForm = React.createClass({
   },
   render: function() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <input type="number" ref="amount" placeholder="Amount" />
-        <input ref="name" placeholder="Description" />
-        <input type="submit" />
-      </form>
+      <fieldset className="form">
+        <legend className="form-legend">Create an entry</legend>
+
+        <form onSubmit={this.handleSubmit}>
+          <ol className="form-list">
+            <li className="form-element">
+              <label className="form-label" htmlFor="amount">Amount</label>
+              <input className="form-input" type="number" ref="amount" placeholder="7.31" id="amount" />
+            </li>
+
+            <li>
+              <label className="form-label" htmlFor="name">Name</label>
+              <input className="form-input" ref="name" placeholder="Lunch at Freebirds" id="name" />
+            </li>
+
+            <li>
+              <input className="form-submit" type="submit" value="Create" />
+            </li>
+          </ol>
+        </form>
+      </fieldset>
     );
   }
 });

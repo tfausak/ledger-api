@@ -9,7 +9,7 @@ body {
 }
 
 .masthead {
-  border-bottom: thin solid #e8e8e8;
+  border-bottom: thin solid #d8d8d8;
   color: #ba8baf;
   font-size: 1.5em;
   font-weight: bold;
@@ -20,7 +20,7 @@ body {
 }
 
 .balance {
-  border-bottom: thin solid #e8e8e8;
+  border-bottom: thin solid #d8d8d8;
   font-size: 1.5em;
   line-height: 2em;
   padding: 0 0.5em;
@@ -39,4 +39,49 @@ body {
 
 .balance-value.negative {
   color: #ab4642;
+}
+
+.form {
+  border: thin solid #d8d8d8;
+  margin: 0.75em;
+  padding: 0 0.75em 0.75em;
+}
+
+.form-legend {
+  padding: 0 0.25em;
+}
+
+.form-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.form-label {
+  display: block;
+}
+
+.form-input,
+.form-submit {
+  -webkit-appearance: none;
+  border: thin solid #d8d8d8;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: block;
+  font-size: 1em;
+  padding: 0 0.25em;
+  width: 100%;
+}
+
+.form-input {
+  height: 1.5em;
+  margin: 0 0 0.75em 0;
+}
+
+.form-submit {
+  color: #f8f8f8;
+  background: #ba8baf;
+  cursor: pointer;
+  font-weight: bold;
+  height: 3em;
 }
