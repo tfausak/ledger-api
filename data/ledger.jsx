@@ -34,10 +34,16 @@ var EntryBox = React.createClass({
       this.setState({entries: response.body.map(this.transform)});
     }.bind(this));
   },
+  getBalance: function() {
+    return this.state.entries
+      .map(function(e) { return e.amount; })
+      .reduce(function(x, y) { return x + y; }, 0);
+  },
   render: function() {
     return (
       <div>
         <h2>Entries</h2>
+        <p>Balance: ${this.getBalance().toFixed(2)}</p>
         <EntryForm onEntrySubmit={this.handleEntrySubmit} />
         <EntryTable
           entries={this.state.entries}
