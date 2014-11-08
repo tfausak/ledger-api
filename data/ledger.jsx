@@ -34,22 +34,43 @@ var EntryBox = React.createClass({
       this.setState({entries: response.body.map(this.transform)});
     }.bind(this));
   },
-  getBalance: function() {
-    return this.state.entries
-      .map(function(e) { return e.amount; })
-      .reduce(function(x, y) { return x + y; }, 0);
-  },
   render: function() {
     return (
       <div>
-        <h2>Entries</h2>
-        <p>Balance: ${this.getBalance().toFixed(2)}</p>
+        <EntryBalance entries={this.state.entries} />
         <EntryForm onEntrySubmit={this.handleEntrySubmit} />
         <EntryTable
           entries={this.state.entries}
           onEntryDelete={this.handleEntryDelete}
           onEntryUpdate={this.handleEntryUpdate}
         />
+      </div>
+    );
+  }
+});
+
+var EntryBalance = React.createClass({
+  getBalance: function() {
+    return this.props.entries
+      .map(function(e) { return e.amount; })
+      .reduce(function(x, y) { return x + y; }, 0);
+  },
+  getClass: function() {
+    var balance = this.getBalance();
+
+    if (balance > 0) { return 'positive'; }
+    if (balance < 0) { return 'negative'; }
+  },
+  render: function() {
+    return (
+      <div className="balance">
+        <div class="balance-label">
+          Balance
+        </div>
+
+        <div className={['balance-value', this.getClass()].join(' ')}>
+          ${this.getBalance().toFixed(2)}
+        </div>
       </div>
     );
   }
