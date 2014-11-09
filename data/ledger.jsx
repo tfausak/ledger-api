@@ -78,11 +78,12 @@ var EntryBalance = React.createClass({
 
 var EntryForm = React.createClass({
   handleSubmit: function(event) {
+    var typeNode = this.refs.type.getDOMNode();
+    var type = typeNode.value;
     var amountNode = this.refs.amount.getDOMNode();
     var amount = amountNode.valueAsNumber;
     var nameNode = this.refs.name.getDOMNode();
     var name = nameNode.value;
-    var entry = {amount: amount, name: name, number: 0};
 
     event.preventDefault();
 
@@ -96,12 +97,18 @@ var EntryForm = React.createClass({
       return;
     }
 
+    if (type == 'credit') {
+      amount *= -1;
+    }
+
+    typeNode.value = 'credit';
+    typeNode.blur();
     amountNode.value = '';
     amountNode.blur();
     nameNode.value = '';
     nameNode.blur();
 
-    this.props.onEntrySubmit(entry);
+    this.props.onEntrySubmit({amount: amount, name: name, number: 0});
   },
   render: function() {
     return (
@@ -111,16 +118,24 @@ var EntryForm = React.createClass({
         <form onSubmit={this.handleSubmit}>
           <ol className="form-list">
             <li className="form-element">
-              <label className="form-label" htmlFor="amount">Amount</label>
-              <input className="form-input" type="number" ref="amount" placeholder="7.31" id="amount" />
+              <label className="form-label" htmlFor="type">Type</label>
+              <select className="form-input" ref="type" id="type" defaultValue="credit">
+                <option value="credit">Credit</option>
+                <option value="debit">Debit</option>
+              </select>
             </li>
 
-            <li>
+            <li className="form-element">
+              <label className="form-label" htmlFor="amount">Amount</label>
+              <input className="form-input" type="number" ref="amount" placeholder="7.31" id="amount" min="0" />
+            </li>
+
+            <li className="form-element">
               <label className="form-label" htmlFor="name">Name</label>
               <input className="form-input" ref="name" placeholder="Lunch at Freebirds" id="name" />
             </li>
 
-            <li>
+            <li className="form-element">
               <input className="form-submit" type="submit" value="Create" />
             </li>
           </ol>
@@ -193,10 +208,14 @@ var EntryElement = React.createClass({
     this.setState({editing: false});
     e.preventDefault();
   },
+  getClass: function() {
+    if (this.props.amount > 0) { return 'positive'; }
+    if (this.props.amount < 0) { return 'negative'; }
+  },
   renderShow: function() {
     return (
       <li className="entry">
-        <div className="entry-amount">
+        <div className={['entry-amount', this.getClass()].join(' ')}>
           ${this.props.amount.toFixed(2)}
         </div>
 

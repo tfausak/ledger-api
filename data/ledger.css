@@ -44,11 +44,11 @@ button {
   top: 0;
 }
 
-.balance-value.positive {
+.positive {
   color: #a1b56c;
 }
 
-.balance-value.negative {
+.negative {
   color: #ab4642;
 }
 
@@ -126,6 +126,7 @@ button {
 .entry-save,
 .entry-cancel {
   background: transparent;
+  cursor: pointer;
 }
 
 .entry-delete,
