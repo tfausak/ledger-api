@@ -127,7 +127,7 @@ var EntryForm = React.createClass({
 
             <li className="form-element">
               <label className="form-label" htmlFor="amount">Amount</label>
-              <input className="form-input" type="number" ref="amount" placeholder="7.31" id="amount" min="0" />
+              <input className="form-input" type="number" ref="amount" placeholder="7.31" id="amount" min="0" step="any" />
             </li>
 
             <li className="form-element">
@@ -239,7 +239,7 @@ var EntryElement = React.createClass({
       <li className="entry">
         <form onSubmit={this.handleSaveClick}>
           <div className="entry-amount">
-            <input type="number" ref="amount" defaultValue={this.props.amount} />
+            <input type="number" ref="amount" defaultValue={this.props.amount} step="any" />
           </div>
 
           <div className="entry-name">
