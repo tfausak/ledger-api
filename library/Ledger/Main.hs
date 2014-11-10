@@ -3,6 +3,7 @@
 module Ledger.Main
   ( main
   , loadConfig
+  , loadSettings
   , loadState
   , loadRemoteState
   , loadLocalState
@@ -12,40 +13,39 @@ module Ledger.Main
 import           Ledger.Application       (application)
 import           Ledger.Models.Entry      (Entries)
 import           Ledger.State             (State)
-import           Paths_ledger             (getDataFileName)
 
 import           Data.Acid.Local          (openLocalStateFrom)
 import           Data.Acid.Memory         (openMemoryState)
 import           Data.Acid.Remote         (openRemoteState, sharedSecretPerform,
                                            skipAuthenticationPerform)
-import           Data.Configurator        (Worth (Required), load, lookup,
-                                           require)
+import           Data.Configurator        (Worth (Required), load, lookup)
 import           Data.Configurator.Types  (Config)
 import           Data.Map                 (fromList)
 import           Network                  (PortID (PortNumber))
 import           Network.Wai.Handler.Warp (Settings, defaultSettings,
                                            runSettings, setPort)
 import           Prelude                  hiding (lookup)
-import           System.Environment       (getArgs)
+import           System.Environment       (getArgs, getEnv)
+import           System.FilePath          ((</>))
 
 main :: IO ()
 main = do
   config <- loadConfig
-  settings <- loadSettings config
+  settings <- loadSettings
   state <- loadState config
   runSettings settings (application config state)
 
 loadConfig :: IO Config
 loadConfig = do
-  name <- getDataFileName "ledger.cfg"
-  names <- getArgs
-  let paths = map Required (name : names)
+  directory <- getEnv "OPENSHIFT_REPO_DIR"
+  let name = directory </> "data" </> "ledger.cfg"
+  let paths = [Required name]
   load paths
 
-loadSettings :: Config -> IO Settings
-loadSettings config = do
-  port <- require config "warp.port"
-  return (setPort port defaultSettings)
+loadSettings :: IO Settings
+loadSettings = do
+  [_ip, port] <- getArgs
+  return (setPort (read port) defaultSettings)
 
 loadState :: Config -> IO State
 loadState config = do
