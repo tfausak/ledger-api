@@ -21,9 +21,10 @@ import           Data.Acid.Remote         (openRemoteState, sharedSecretPerform,
 import           Data.Configurator        (Worth (Required), load, lookup)
 import           Data.Configurator.Types  (Config)
 import           Data.Map                 (fromList)
+import           Data.String              (fromString)
 import           Network                  (PortID (PortNumber))
 import           Network.Wai.Handler.Warp (Settings, defaultSettings,
-                                           runSettings, setPort)
+                                           runSettings, setHost, setPort)
 import           Prelude                  hiding (lookup)
 import           System.Environment       (getArgs, getEnv)
 import           System.FilePath          ((</>))
@@ -44,8 +45,9 @@ loadConfig = do
 
 loadSettings :: IO Settings
 loadSettings = do
-  [_ip, port] <- getArgs
-  return (setPort (read port) defaultSettings)
+  [ip, port] <- getArgs
+  putStrLn ("http://" ++ ip ++ ":" ++ port)
+  return (setHost (fromString ip) (setPort (read port) defaultSettings))
 
 loadState :: Config -> IO State
 loadState config = do
