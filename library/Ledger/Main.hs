@@ -37,8 +37,8 @@ main = do
 
 loadConfig :: IO Config
 loadConfig = do
-  directory <- getEnv "OPENSHIFT_REPO_DIR"
-  let name = directory </> "data" </> "ledger.cfg"
+  directory <- getEnv "OPENSHIFT_DATA_DIR"
+  let name = directory </> "ledger.cfg"
   let paths = [Required name]
   load paths
 
