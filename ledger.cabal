@@ -38,6 +38,9 @@ data-files:
     static/apple-touch-startup-image-768x1004.png
     static/apple-touch-startup-image-768x1004@2x.png
     static/favicon.ico
+    vendor/bootstrap-3.3.1.css
+    vendor/bootstrap-theme-3.3.1.css
+    vendor/bootstrap-3.3.1.js
     vendor/JSXTransformer-0.12.1.js
     vendor/react-0.12.1.js
     vendor/superagent-0.21.0.js
