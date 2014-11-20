@@ -82,9 +82,9 @@ route request =
 
         -- Vendor
         ["jsx.js"] -> static method
-          "vendor/JSXTransformer-0.12.0.js" "application/javascript"
+          "vendor/JSXTransformer-0.12.1.js" "application/javascript"
         ["react.js"] -> static method
-          "vendor/react-0.12.0.js" "application/javascript"
+          "vendor/react-0.12.1.js" "application/javascript"
         ["superagent.js"] -> static method
           "vendor/superagent-0.20.0.js" "application/javascript"
 
