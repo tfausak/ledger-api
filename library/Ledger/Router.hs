@@ -86,7 +86,7 @@ route request =
         ["react.js"] -> static method
           "vendor/react-0.12.1.js" "application/javascript"
         ["superagent.js"] -> static method
-          "vendor/superagent-0.20.0.js" "application/javascript"
+          "vendor/superagent-0.21.0.js" "application/javascript"
 
         _ -> Actions.notFound
 
