@@ -11,8 +11,8 @@ import           Data.Aeson           (ToJSON, encode)
 import           Data.ByteString      (ByteString)
 import           Data.ByteString.Lazy (readFile)
 import           Data.Map             (fromList, insert, toList)
-import           Network.HTTP.Types   (ResponseHeaders, Status, hContentType,
-                                       status200)
+import           Network.HTTP.Types   (ResponseHeaders, Status, hCacheControl,
+                                       hContentType, status200)
 import           Network.Wai          (Response, responseLBS)
 import           Prelude              hiding (readFile)
 
@@ -21,7 +21,10 @@ file path contentType = do
   name <- getDataFileName path
   body <- readFile name
   let status = status200
-  let headers = [(hContentType, contentType)]
+  let headers =
+        [ (hCacheControl, "max-age=86400")
+        , (hContentType, contentType)
+        ]
   let response = responseLBS status headers body
   return response
 
