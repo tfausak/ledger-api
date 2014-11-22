@@ -21,7 +21,7 @@ $ .cabal-sandbox/bin/ledger
 
 ## Configuration
 
-To configure Haskell, create a [Configurator][3] file.
+To configure Ledger, create a [Configurator][3] file.
 
 ``` cfg
 # tmp/ledger.cfg

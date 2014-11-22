@@ -1,11 +1,29 @@
 CACHE MANIFEST
-# v0.1.3
+# v0.1.4
 
-jsx.js
-ledger.css
-ledger.jsx
-react.js
-superagent.js
+# Front end
+all.min.css
+all.min.js
 
+# Static
+apple-touch-icon-precomposed-57.png
+apple-touch-icon-precomposed-57@2x.png
+apple-touch-icon-precomposed-60@3x.png
+apple-touch-icon-precomposed-72.png
+apple-touch-icon-precomposed-72@2x.png
+apple-touch-icon-precomposed-76.png
+apple-touch-icon-precomposed-76@2x.png
+apple-touch-startup-image-320x460.png
+apple-touch-startup-image-320x460@2x.png
+apple-touch-startup-image-320x548@2x.png
+apple-touch-startup-image-375x647@2x.png
+apple-touch-startup-image-394x736@3x.png
+apple-touch-startup-image-414x716@3x.png
+apple-touch-startup-image-748x1024.png
+apple-touch-startup-image-748x1024@2x.png
+apple-touch-startup-image-768x1004.png
+apple-touch-startup-image-768x1004@2x.png
+
+# Back end
 NETWORK:
 api/entries
