@@ -85,10 +85,6 @@ route request =
           "vendor/bootstrap-3.3.1.css" "text/css"
         ["bootstrap-theme.css"] -> static method
           "vendor/bootstrap-theme-3.3.1.css" "text/css"
-        ["bootstrap.js"] -> static method
-          "vendor/bootstrap-3.3.1.js" "application/javascript"
-        ["jquery.js"] -> static method
-          "vendor/jquery-2.1.1.js" "application/javascript"
         ["jsx.js"] -> static method
           "vendor/JSXTransformer-0.12.1.js" "application/javascript"
         ["react.js"] -> static method
