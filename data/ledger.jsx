@@ -115,7 +115,7 @@ var Footer = React.createClass({
     return (
       <div className="container-fluid">
         <p className="text-center">
-          Ledger v0.1.3
+          Ledger v0.1.4
         </p>
       </div>
     );
@@ -509,7 +509,7 @@ var EntryForm = React.createClass({
 
       typeCreditNode.checked = true;
       typeDebitNode.checked = false;
-      
+
       var nodes = document.querySelectorAll('#entry-form input, #entry-form button');
       for (var i = 0; i < nodes.length; i++) {
         nodes.item(i).blur();

@@ -2,6 +2,10 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.1.4 (2014-11-21)
+
+- Switch to Bootstrap.
+
 ## v0.1.3 (2014-11-09)
 
 - Styled the interface.
