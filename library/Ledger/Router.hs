@@ -24,10 +24,10 @@ route request =
           "ledger.html" "text/html"
         ["ledger.manifest"] -> static method
           "ledger.manifest" "text/cache-manifest"
-        ["ledger.css"] -> static method
-          "ledger.css" "text/css"
-        ["ledger.jsx"] -> static method
-          "ledger.jsx" "text/jsx"
+        ["all.min.css"] -> static method
+          "all.min.css" "text/css"
+        ["all.min.js"] -> static method
+          "all.min.js" "text/jsx"
 
         -- Back end
         ["api", "entries"] -> case method of
@@ -79,18 +79,6 @@ route request =
           "static/apple-touch-startup-image-768x1004.png" "image/png"
         ["apple-touch-startup-image-768x1004@2x.png"] -> static method
           "static/apple-touch-startup-image-768x1004@2x.png" "image/png"
-
-        -- Vendor
-        ["bootstrap.css"] -> static method
-          "vendor/bootstrap-3.3.1.css" "text/css"
-        ["bootstrap-theme.css"] -> static method
-          "vendor/bootstrap-theme-3.3.1.css" "text/css"
-        ["jsx.js"] -> static method
-          "vendor/JSXTransformer-0.12.1.js" "application/javascript"
-        ["react.js"] -> static method
-          "vendor/react-0.12.1.js" "application/javascript"
-        ["superagent.js"] -> static method
-          "vendor/superagent-0.21.0.js" "application/javascript"
 
         _ -> Actions.notFound
 
