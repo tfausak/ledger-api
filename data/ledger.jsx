@@ -497,7 +497,11 @@ var EntryForm = React.createClass({
     var entry = {amount: amount, name: name};
 
     if (this.isEditing()) {
-      entry = $.extend({}, this.props, entry);
+      entry = {
+        amount: entry.amount,
+        name: entry.name,
+        number: this.props.number
+      };
       this.props.onUpdate(entry);
     }
     else {
@@ -505,7 +509,11 @@ var EntryForm = React.createClass({
 
       typeCreditNode.checked = true;
       typeDebitNode.checked = false;
-      $('#entry-form input, #entry-form button').blur();
+      
+      var nodes = document.querySelectorAll('#entry-form input, #entry-form button');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes.item(i).blur();
+      }
 
       amountNode.value = '';
       nameNode.value = '';
