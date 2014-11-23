@@ -26,33 +26,45 @@ var Ledger = React.createClass({
   getEntries: function() {
     var url = '/api/entries?key=' + this.state.key;
     superagent.get(url, function(response) {
-      var entries = response.body.map(function (object) {
-        return {
-          amount: object.amount,
-          created: new Date(object.created),
-          name: object.name,
-          number: object.number
-        };
-      });
+      var entries = response.body.map(this.transform);
       this.setState({entries: entries});
     }.bind(this));
+  },
+  transform: function(object) {
+    return {
+      amount: object.amount,
+      created: new Date(object.created),
+      name: object.name,
+      number: object.number
+    };
   },
   createEntry: function(entry) {
     var url = '/api/entries?key=' + this.state.key;
     superagent.post(url, entry, function(response) {
-      this.getEntries();
+      var newEntry = this.transform(response.body);
+      this.setState({entries: [newEntry].concat(this.state.entries)});
     }.bind(this));
   },
   updateEntry: function(entry) {
     var url = '/api/entries/' + entry.number + '?key=' + this.state.key;
     superagent.put(url, entry, function(response) {
-      this.getEntries();
+      var updatedEntry = this.transform(response.body);
+      this.setState({entries: this.state.entries.map(function(e) {
+        if (e.number === updatedEntry.number) {
+          return updatedEntry;
+        }
+        else {
+          return e;
+        }
+      })});
     }.bind(this));
   },
   deleteEntry: function(entry) {
     var url = '/api/entries/' + entry.number + '?key=' + this.state.key;
     superagent.del(url, function(response) {
-      this.getEntries();
+      this.setState({entries: this.state.entries.filter(function(e) {
+        return e.number !== entry.number;
+      })});
     }.bind(this));
   }
 });
