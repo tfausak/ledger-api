@@ -3,12 +3,7 @@
 {-# LANGUAGE OverloadedStrings  #-}
 {-# LANGUAGE TypeFamilies       #-}
 
-module Ledger.Models.Entry
-  ( Entries
-  , Entry (..)
-  , QueryEntries (QueryEntries)
-  , WriteEntries (WriteEntries)
-  ) where
+module Ledger.Models.Entry where
 
 import           Control.Monad.Reader (ask)
 import           Control.Monad.State  (put)

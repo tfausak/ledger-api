@@ -1,6 +1,4 @@
-module Setup
-  ( main
-  ) where
+module Setup where
 
 import           Distribution.Simple (defaultMain)
 

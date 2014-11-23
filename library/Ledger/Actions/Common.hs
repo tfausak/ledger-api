@@ -1,12 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Actions.Common
-  ( Action
-  , badRequest
-  , forbidden
-  , notFound
-  , notAllowed
-  ) where
+module Ledger.Actions.Common where
 
 import           Ledger.State            (State)
 import           Ledger.Utilities        (json)

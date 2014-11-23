@@ -1,7 +1,4 @@
-module Ledger.Application
-  ( application
-  , middleware
-  ) where
+module Ledger.Application where
 
 import           Ledger.Router                        (route)
 import           Ledger.State                         (State)

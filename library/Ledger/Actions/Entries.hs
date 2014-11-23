@@ -1,12 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Actions.Entries
-  ( getEntries
-  , postEntries
-  , getEntry
-  , putEntry
-  , deleteEntry
-  ) where
+module Ledger.Actions.Entries where
 
 import           Ledger.Actions.Common        (Action, badRequest, forbidden,
                                                notFound)

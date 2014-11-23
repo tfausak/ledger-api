@@ -1,13 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Main
-  ( main
-  , loadConfig
-  , loadState
-  , loadRemoteState
-  , loadLocalState
-  , loadMemoryState
-  ) where
+module Ledger.Main where
 
 import           Ledger.Application       (application)
 import           Ledger.Models.Entry      (Entries)

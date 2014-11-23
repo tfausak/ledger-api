@@ -1,9 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Router
-  ( route
-  , static
-  ) where
+module Ledger.Router where
 
 import           Ledger.Actions         (Action)
 import qualified Ledger.Actions         as Actions

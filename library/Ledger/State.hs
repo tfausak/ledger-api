@@ -1,6 +1,4 @@
-module Ledger.State
-  ( State
-  ) where
+module Ledger.State where
 
 import           Ledger.Models.Entry (Entries)
 
