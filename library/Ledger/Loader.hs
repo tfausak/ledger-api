@@ -7,7 +7,8 @@ import           Paths_ledger             (getDataFileName)
 
 import           Data.Acid.Local          (openLocalStateFrom)
 import           Data.Acid.Memory         (openMemoryState)
-import           Data.Acid.Remote         (openRemoteState, sharedSecretPerform,
+import           Data.Acid.Remote         (CommChannel, openRemoteState,
+                                           sharedSecretPerform,
                                            skipAuthenticationPerform)
 import           Data.Configurator        (Worth (Required), load, lookup,
                                            require)
@@ -41,20 +42,15 @@ loadState config = do
 loadRemoteState :: Config -> IO (Maybe State)
 loadRemoteState config = do
   maybeHost <- lookup config "acid-state.host"
-  case maybeHost of
-    Nothing -> return Nothing
-    Just host -> do
-      maybePort <- lookup config "acid-state.port"
-      case maybePort of
-        Nothing -> return Nothing
-        Just port -> do
-          maybeSecret <- lookup config "acid-state.secret"
-          let authenticate = case maybeSecret of
-                Nothing -> skipAuthenticationPerform
-                Just secret -> sharedSecretPerform secret
-          let number = fromIntegral (port :: Int)
-          state <- openRemoteState authenticate host (PortNumber number)
-          return (Just state)
+  maybePort <- lookup config "acid-state.port"
+
+  case (maybeHost, maybePort) of
+    (Just host, Just port) -> do
+      authentication <- loadRemoteAuthentication config
+      let portNumber = PortNumber (fromIntegral (port :: Int))
+      state <- openRemoteState authentication host portNumber
+      return (Just state)
+    _ -> return Nothing
 
 loadLocalState :: Config -> IO (Maybe State)
 loadLocalState config = do
@@ -67,3 +63,11 @@ loadLocalState config = do
 
 loadMemoryState :: IO State
 loadMemoryState = openMemoryState defaultState
+
+loadRemoteAuthentication :: Config -> IO (CommChannel -> IO ())
+loadRemoteAuthentication config = do
+  maybeSecret <- lookup config "acid-state.secret"
+  let authentication = case maybeSecret of
+        Nothing -> skipAuthenticationPerform
+        Just secret -> sharedSecretPerform secret
+  return authentication
