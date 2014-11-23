@@ -14,6 +14,7 @@ import           Data.Configurator        (Worth (Required), load, lookup,
                                            require)
 import           Data.Configurator.Types  (Config)
 import           Data.Map                 (fromList)
+import           Data.Maybe               (catMaybes)
 import           Network                  (PortID (PortNumber))
 import           Network.Wai.Handler.Warp (Settings, defaultSettings, setPort)
 import           Prelude                  hiding (lookup)
@@ -33,14 +34,11 @@ loadSettings config = do
 
 loadState :: Config -> IO State
 loadState config = do
-  maybeRemoteState <- loadRemoteState config
-  case maybeRemoteState of
-    Just state -> return state
-    Nothing -> do
-      maybeLocalState <- loadLocalState config
-      case maybeLocalState of
-        Just state -> return state
-        Nothing -> loadMemoryState
+  remote <- loadRemoteState config
+  local <- loadLocalState config
+  memory <- loadMemoryState
+
+  return (head (catMaybes [remote, local, Just memory]))
 
 loadRemoteState :: Config -> IO (Maybe State)
 loadRemoteState config = do
