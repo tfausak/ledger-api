@@ -150,7 +150,11 @@ var Footer = React.createClass({
     return (
       <div className="container">
         <p className="text-center">
-          Ledger v0.1.4
+          <a href="https://github.com/tfausak/ledger">
+            Ledger
+          </a>
+          {' '}
+          v0.1.4
         </p>
       </div>
     );
