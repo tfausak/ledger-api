@@ -2,8 +2,8 @@ CACHE MANIFEST
 # v0.1.4
 
 # Front end
-all.min.css
-all.min.js
+ledger.css
+ledger.jsx
 
 # Static
 apple-touch-icon-precomposed-57.png
@@ -24,6 +24,15 @@ apple-touch-startup-image-748x1024@2x.png
 apple-touch-startup-image-768x1004.png
 apple-touch-startup-image-768x1004@2x.png
 favicon.ico
+
+# Vendor
+bootstrap.css
+bootstrap-theme.css
+bootstrap.js
+jquery.js
+jsx.js
+react.js
+superagent.js
 
 # Back end
 NETWORK:
