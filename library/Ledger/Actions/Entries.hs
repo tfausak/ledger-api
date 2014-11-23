@@ -22,10 +22,10 @@ import qualified Data.Configurator            as Configurator
 import           Data.List                    (find)
 import qualified Data.Map                     as Map
 import           Data.Maybe                   (isNothing)
-import           Data.Text                    (unpack)
+import           Data.Text                    (Text, unpack)
 import           Data.Time                    (getCurrentTime)
 import           Network.HTTP.Types           (status200)
-import           Network.Wai                  (Request, pathInfo, queryString,
+import           Network.Wai                  (Request, queryString,
                                                strictRequestBody)
 import           Text.Read                    (readMaybe)
 
@@ -45,17 +45,17 @@ postEntries = authenticate $ do
       entry <- createEntry entryRequest
       respondWithEntry entry
 
-getEntry :: Action
-getEntry = authenticate $ do
-  maybeNumber <- getEntryNumber
+getEntry :: Text -> Action
+getEntry entryId = authenticate $ do
+  let maybeNumber = getEntryNumber entryId
   maybeEntry <- findEntry maybeNumber
   case maybeEntry of
     Nothing -> notFound
     Just entry -> respondWithEntry entry
 
-putEntry :: Action
-putEntry = authenticate $ do
-  maybeNumber <- getEntryNumber
+putEntry :: Text -> Action
+putEntry entryId = authenticate $ do
+  let maybeNumber = getEntryNumber entryId
   maybeEntry <- findEntry maybeNumber
   case maybeEntry of
     Nothing -> notFound
@@ -67,9 +67,9 @@ putEntry = authenticate $ do
           newEntry <- updateEntry oldEntry entryRequest
           respondWithEntry newEntry
 
-deleteEntry :: Action
-deleteEntry = authenticate $ do
-  maybeNumber <- getEntryNumber
+deleteEntry :: Text -> Action
+deleteEntry entryId = authenticate $ do
+  let maybeNumber = getEntryNumber entryId
   maybeEntry <- findEntry maybeNumber
   case maybeEntry of
     Nothing -> notFound
@@ -122,12 +122,8 @@ respondWithEntry entry = do
   let response = json status200 [] entryResponse
   return response
 
-getEntryNumber :: ReaderT (Request, a, b) IO (Maybe Integer)
-getEntryNumber = do
-  (request, _, _) <- ask
-  let parameter = pathInfo request !! 2
-  let maybeNumber = readMaybe (unpack parameter)
-  return maybeNumber
+getEntryNumber :: Text -> Maybe Integer
+getEntryNumber entryId = readMaybe (unpack entryId)
 
 findEntry :: Maybe Integer -> ReaderT (a, b, State) IO (Maybe Entry.Entry)
 findEntry maybeNumber = case maybeNumber of

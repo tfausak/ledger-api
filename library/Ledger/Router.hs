@@ -31,10 +31,10 @@ route request =
           "GET" -> Actions.getEntries
           "POST" -> Actions.postEntries
           _ -> Actions.notAllowed
-        ["api", "entries", _] -> case method of
-          "GET" -> Actions.getEntry
-          "PUT" -> Actions.putEntry
-          "DELETE" -> Actions.deleteEntry
+        ["api", "entries", entryId] -> case method of
+          "GET" -> Actions.getEntry entryId
+          "PUT" -> Actions.putEntry entryId
+          "DELETE" -> Actions.deleteEntry entryId
           _ -> Actions.notAllowed
 
         -- Static
