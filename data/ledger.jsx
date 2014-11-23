@@ -98,12 +98,13 @@ var Content = React.createClass({
       <div className="container">
         <div className="row">
           <div className="col-sm-4">
-            <Balance entries={this.props.entries} />
+            <Balance entries={this.filteredEntries()} />
             <hr />
             <CreateEntryForm onCreate={this.props.onCreateEntry} />
           </div>
 
           <div className="col-sm-8">
+            <Search onSearch={this.handleSearch} />
             <Entries
               entries={this.sortedEntries()}
               onUpdate={this.props.onUpdateEntry}
@@ -114,9 +115,31 @@ var Content = React.createClass({
       </div>
     );
   },
+  getInitialState: function() {
+    return {
+      query: ''
+    };
+  },
 
+  handleSearch: function(query) {
+    console.debug(query);
+    this.setState({query: query});
+  },
+
+  filteredEntries: function() {
+    return this.props.entries.filter(function(entry) {
+      if (this.state.query) {
+        var haystack = entry.name.toLowerCase();
+        var needle = this.state.query.toLowerCase();
+        return haystack.indexOf(needle) !== -1;
+      }
+      else {
+        return true;
+      }
+    }.bind(this));
+  },
   sortedEntries: function() {
-    return this.props.entries.sort(function(a, b) {
+    return this.filteredEntries().sort(function(a, b) {
       return b.created - a.created;
     });
   }
@@ -193,6 +216,32 @@ var CreateEntryForm = React.createClass({
         </div>
       </div>
     );
+  }
+});
+
+var Search = React.createClass({
+  propTypes: {
+    onSearch :React.PropTypes.func.isRequired
+  },
+
+  render: function() {
+    return (
+      <form>
+        <div className="form-group">
+          <input
+            className="form-control"
+            onChange={this.handleChange}
+            placeholder="Search"
+            ref="query"
+            type="search"
+            />
+        </div>
+      </form>
+    );
+  },
+
+  handleChange: function() {
+    this.props.onSearch(this.refs.query.getDOMNode().value);
   }
 });
 
