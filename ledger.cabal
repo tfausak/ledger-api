@@ -73,6 +73,7 @@ library
         Ledger.Actions.Common
         Ledger.Actions.Entries
         Ledger.Application
+        Ledger.Loader
         Ledger.Main
         Ledger.Models.Entry
         Ledger.Models.Entry.Request
