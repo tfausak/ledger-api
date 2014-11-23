@@ -2,8 +2,7 @@
 
 module Ledger.Loader where
 
-import           Ledger.Models.Entry      (Entries)
-import           Ledger.State             (State)
+import           Ledger.State             (State, defaultState)
 import           Paths_ledger             (getDataFileName)
 
 import           Data.Acid.Local          (openLocalStateFrom)
@@ -13,7 +12,6 @@ import           Data.Acid.Remote         (openRemoteState, sharedSecretPerform,
 import           Data.Configurator        (Worth (Required), load, lookup,
                                            require)
 import           Data.Configurator.Types  (Config)
-import           Data.Map                 (fromList)
 import           Data.Maybe               (catMaybes)
 import           Network                  (PortID (PortNumber))
 import           Network.Wai.Handler.Warp (Settings, defaultSettings, setPort)
@@ -69,6 +67,3 @@ loadLocalState config = do
 
 loadMemoryState :: IO State
 loadMemoryState = openMemoryState defaultState
-
-defaultState :: Entries
-defaultState = fromList []
