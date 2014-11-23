@@ -73,7 +73,7 @@ var Header = React.createClass({
   render: function() {
     return (
       <div className="navbar navbar-default navbar-static-top">
-        <div className="container-fluid">
+        <div className="container">
           <div className="navbar-header">
             <a className="navbar-brand" href="/">
               Ledger
@@ -95,7 +95,7 @@ var Content = React.createClass({
 
   render: function() {
     return (
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           <div className="col-sm-4">
             <Balance entries={this.props.entries} />
@@ -125,7 +125,7 @@ var Content = React.createClass({
 var Footer = React.createClass({
   render: function() {
     return (
-      <div className="container-fluid">
+      <div className="container">
         <p className="text-center">
           Ledger v0.1.4
         </p>
