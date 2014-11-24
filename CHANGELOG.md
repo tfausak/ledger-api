@@ -2,6 +2,10 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.1.5 (2014-11-24)
+
+- Added the ability to search and filter entries.
+
 ## v0.1.4 (2014-11-21)
 
 - Switch to Bootstrap.

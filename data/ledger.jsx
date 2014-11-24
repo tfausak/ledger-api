@@ -191,7 +191,7 @@ var Footer = React.createClass({
             Ledger
           </a>
           {' '}
-          v0.1.4
+          v0.1.5
         </p>
       </div>
     );
