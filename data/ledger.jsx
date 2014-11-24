@@ -294,57 +294,61 @@ var Filter = React.createClass({
   render: function() {
     return (
       <form>
-        <div className="form-group">
-          <input
-            className="form-control"
-            onChange={this.handleChange}
-            placeholder="After"
-            ref="after"
-            type="date"
-            />
-        </div>
-
-        <div className="form-group">
-          <input
-            className="form-control"
-            onChange={this.handleChange}
-            placeholder="Before"
-            ref="before"
-            type="date"
-            />
-        </div>
-
-        <div className="form-group">
-          <div className="input-group">
-            <div className="input-group-addon">
-              $
-            </div>
-
+        <div className="row">
+          <div className="form-group col-xs-6">
             <input
               className="form-control"
               onChange={this.handleChange}
-              placeholder="Minimum"
-              ref="minimum"
-              step="any"
-              type="number"
+              placeholder="After"
+              ref="after"
+              type="date"
+              />
+          </div>
+
+          <div className="form-group col-xs-6">
+            <input
+              className="form-control"
+              onChange={this.handleChange}
+              placeholder="Before"
+              ref="before"
+              type="date"
               />
           </div>
         </div>
 
-        <div className="form-group">
-          <div className="input-group">
-            <div className="input-group-addon">
-              $
-            </div>
+        <div className="row">
+          <div className="form-group col-xs-6">
+            <div className="input-group">
+              <div className="input-group-addon">
+                $
+              </div>
 
-            <input
-              className="form-control"
-              onChange={this.handleChange}
-              placeholder="Maximum"
-              ref="maximum"
-              step="any"
-              type="number"
-              />
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                placeholder="Minimum"
+                ref="minimum"
+                step="any"
+                type="number"
+                />
+            </div>
+          </div>
+
+          <div className="form-group col-xs-6">
+            <div className="input-group">
+              <div className="input-group-addon">
+                $
+              </div>
+
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                placeholder="Maximum"
+                ref="maximum"
+                step="any"
+                type="number"
+                />
+            </div>
           </div>
         </div>
       </form>
