@@ -1,9 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Models.Entry.Response
-  ( EntryResponse (..)
-  , toResponse
-  ) where
+module Ledger.Models.Entry.Response where
 
 import qualified Ledger.Models.Entry as Entry
 

@@ -26,33 +26,45 @@ var Ledger = React.createClass({
   getEntries: function() {
     var url = '/api/entries?key=' + this.state.key;
     superagent.get(url, function(response) {
-      var entries = response.body.map(function (object) {
-        return {
-          amount: object.amount,
-          created: new Date(object.created),
-          name: object.name,
-          number: object.number
-        };
-      });
+      var entries = response.body.map(this.transform);
       this.setState({entries: entries});
     }.bind(this));
+  },
+  transform: function(object) {
+    return {
+      amount: object.amount,
+      created: new Date(object.created),
+      name: object.name,
+      number: object.number
+    };
   },
   createEntry: function(entry) {
     var url = '/api/entries?key=' + this.state.key;
     superagent.post(url, entry, function(response) {
-      this.getEntries();
+      var newEntry = this.transform(response.body);
+      this.setState({entries: [newEntry].concat(this.state.entries)});
     }.bind(this));
   },
   updateEntry: function(entry) {
     var url = '/api/entries/' + entry.number + '?key=' + this.state.key;
     superagent.put(url, entry, function(response) {
-      this.getEntries();
+      var updatedEntry = this.transform(response.body);
+      this.setState({entries: this.state.entries.map(function(e) {
+        if (e.number === updatedEntry.number) {
+          return updatedEntry;
+        }
+        else {
+          return e;
+        }
+      })});
     }.bind(this));
   },
   deleteEntry: function(entry) {
     var url = '/api/entries/' + entry.number + '?key=' + this.state.key;
     superagent.del(url, function(response) {
-      this.getEntries();
+      this.setState({entries: this.state.entries.filter(function(e) {
+        return e.number !== entry.number;
+      })});
     }.bind(this));
   }
 });
@@ -61,7 +73,7 @@ var Header = React.createClass({
   render: function() {
     return (
       <div className="navbar navbar-default navbar-static-top">
-        <div className="container-fluid">
+        <div className="container">
           <div className="navbar-header">
             <a className="navbar-brand" href="/">
               Ledger
@@ -83,15 +95,17 @@ var Content = React.createClass({
 
   render: function() {
     return (
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           <div className="col-sm-4">
-            <Balance entries={this.props.entries} />
+            <Balance entries={this.filteredEntries()} />
             <hr />
             <CreateEntryForm onCreate={this.props.onCreateEntry} />
           </div>
 
           <div className="col-sm-8">
+            <Search onSearch={this.handleSearch} />
+            <Filter onFilter={this.handleFilter} />
             <Entries
               entries={this.sortedEntries()}
               onUpdate={this.props.onUpdateEntry}
@@ -102,9 +116,67 @@ var Content = React.createClass({
       </div>
     );
   },
+  getInitialState: function() {
+    return {
+      after: null,
+      before: null,
+      maximum: undefined,
+      minimum: undefined,
+      query: ''
+    };
+  },
 
+  handleFilter: function(after, before, minimum, maximum) {
+    this.setState({
+      after: after,
+      before: before,
+      maximum: maximum,
+      minimum: minimum
+    });
+  },
+  handleSearch: function(query) {
+    this.setState({query: query});
+  },
+
+  filteredEntries: function() {
+    return this.props.entries.filter(function(entry) {
+      if (this.state.query) {
+        var haystack = entry.name.toLowerCase();
+        var needle = this.state.query.toLowerCase();
+        if (haystack.indexOf(needle) === -1) {
+          return false;
+        }
+      }
+
+      if (this.state.after) {
+        if (entry.created < this.state.after) {
+          return false;
+        }
+      }
+
+      if (this.state.before) {
+        if (entry.created > this.state.before) {
+          return false;
+        }
+      }
+
+      if (!isNaN(this.state.minimum)) {
+        if (entry.amount < this.state.minimum) {
+          return false;
+        }
+      }
+
+      if (!isNaN(this.state.maximum)) {
+        if (entry.amount > this.state.maximum) {
+          return false;
+        }
+      }
+
+      return true;
+    }.bind(this));
+  },
   sortedEntries: function() {
-    return this.props.entries.sort(function(a, b) {
+    return this.filteredEntries().sort(function(a, b) {
       return b.created - a.created;
     });
   }
@@ -113,9 +185,13 @@ var Content = React.createClass({
 var Footer = React.createClass({
   render: function() {
     return (
-      <div className="container-fluid">
+      <div className="container">
         <p className="text-center">
-          Ledger v0.1.4
+          <a href="https://github.com/tfausak/ledger">
+            Ledger
+          </a>
+          {' '}
+          v0.1.5
         </p>
       </div>
     );
@@ -181,6 +257,117 @@ var CreateEntryForm = React.createClass({
         </div>
       </div>
     );
+  }
+});
+
+var Search = React.createClass({
+  propTypes: {
+    onSearch :React.PropTypes.func.isRequired
+  },
+
+  render: function() {
+    return (
+      <form>
+        <div className="form-group">
+          <input
+            className="form-control"
+            onChange={this.handleChange}
+            placeholder="Search"
+            ref="query"
+            type="search"
+            />
+        </div>
+      </form>
+    );
+  },
+
+  handleChange: function() {
+    this.props.onSearch(this.refs.query.getDOMNode().value);
+  }
+});
+
+var Filter = React.createClass({
+  propTypes: {
+    onFilter: React.PropTypes.func.isRequired
+  },
+
+  render: function() {
+    return (
+      <form>
+        <div className="row">
+          <div className="form-group col-xs-6">
+            <input
+              className="form-control"
+              onChange={this.handleChange}
+              placeholder="After"
+              ref="after"
+              type="date"
+              />
+          </div>
+
+          <div className="form-group col-xs-6">
+            <input
+              className="form-control"
+              onChange={this.handleChange}
+              placeholder="Before"
+              ref="before"
+              type="date"
+              />
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="form-group col-xs-6">
+            <div className="input-group">
+              <div className="input-group-addon">
+                $
+              </div>
+
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                placeholder="Minimum"
+                ref="minimum"
+                step="any"
+                type="number"
+                />
+            </div>
+          </div>
+
+          <div className="form-group col-xs-6">
+            <div className="input-group">
+              <div className="input-group-addon">
+                $
+              </div>
+
+              <input
+                className="form-control"
+                onChange={this.handleChange}
+                placeholder="Maximum"
+                ref="maximum"
+                step="any"
+                type="number"
+                />
+            </div>
+          </div>
+        </div>
+      </form>
+    );
+  },
+
+  handleChange: function() {
+    var afterNode = this.refs.after.getDOMNode();
+    var after = afterNode.valueAsDate ||
+      new Date(Date.parse(afterNode.value));
+
+    var beforeNode = this.refs.before.getDOMNode();
+    var before = beforeNode.valueAsDate ||
+      new Date(Date.parse(beforeNode.value));
+
+    var minimum = this.refs.minimum.getDOMNode().valueAsNumber;
+    var maximum = this.refs.maximum.getDOMNode().valueAsNumber;
+
+    this.props.onFilter(after, before, minimum, maximum);
   }
 });
 

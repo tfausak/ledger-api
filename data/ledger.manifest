@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v0.1.4
+# v0.1.5
 
 # Front end
 all.min.css
@@ -23,7 +23,8 @@ apple-touch-startup-image-748x1024.png
 apple-touch-startup-image-748x1024@2x.png
 apple-touch-startup-image-768x1004.png
 apple-touch-startup-image-768x1004@2x.png
+favicon.ico
 
 # Back end
 NETWORK:
-api/entries
+api

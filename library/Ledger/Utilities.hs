@@ -1,9 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Utilities
-  ( file
-  , json
-  ) where
+module Ledger.Utilities where
 
 import           Paths_ledger         (getDataFileName)
 

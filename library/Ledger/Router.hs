@@ -1,9 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Router
-  ( route
-  , static
-  ) where
+module Ledger.Router where
 
 import           Ledger.Actions         (Action)
 import qualified Ledger.Actions         as Actions
@@ -27,17 +24,17 @@ route request =
         ["all.min.css"] -> static method
           "all.min.css" "text/css"
         ["all.min.js"] -> static method
-          "all.min.js" "text/jsx"
+          "all.min.js" "application/javascript"
 
         -- Back end
         ["api", "entries"] -> case method of
           "GET" -> Actions.getEntries
           "POST" -> Actions.postEntries
           _ -> Actions.notAllowed
-        ["api", "entries", _] -> case method of
-          "GET" -> Actions.getEntry
-          "PUT" -> Actions.putEntry
-          "DELETE" -> Actions.deleteEntry
+        ["api", "entries", entryId] -> case method of
+          "GET" -> Actions.getEntry entryId
+          "PUT" -> Actions.putEntry entryId
+          "DELETE" -> Actions.deleteEntry entryId
           _ -> Actions.notAllowed
 
         -- Static
