@@ -120,12 +120,19 @@ var Content = React.createClass({
     return {
       after: null,
       before: null,
+      maximum: undefined,
+      minimum: undefined,
       query: ''
     };
   },
 
-  handleFilter: function(after, before) {
-    this.setState({after: after, before: before});
+  handleFilter: function(after, before, minimum, maximum) {
+    this.setState({
+      after: after,
+      before: before,
+      maximum: maximum,
+      minimum: minimum
+    });
   },
   handleSearch: function(query) {
     this.setState({query: query});
@@ -149,6 +156,18 @@ var Content = React.createClass({
 
       if (this.state.before) {
         if (entry.created > this.state.before) {
+          return false;
+        }
+      }
+
+      if (!isNaN(this.state.minimum)) {
+        if (entry.amount < this.state.minimum) {
+          return false;
+        }
+      }
+
+      if (!isNaN(this.state.maximum)) {
+        if (entry.amount > this.state.maximum) {
           return false;
         }
       }
@@ -294,20 +313,57 @@ var Filter = React.createClass({
             type="date"
             />
         </div>
+
+        <div className="form-group">
+          <div className="input-group">
+            <div className="input-group-addon">
+              $
+            </div>
+
+            <input
+              className="form-control"
+              onChange={this.handleChange}
+              placeholder="Minimum"
+              ref="minimum"
+              step="any"
+              type="number"
+              />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <div className="input-group">
+            <div className="input-group-addon">
+              $
+            </div>
+
+            <input
+              className="form-control"
+              onChange={this.handleChange}
+              placeholder="Maximum"
+              ref="maximum"
+              step="any"
+              type="number"
+              />
+          </div>
+        </div>
       </form>
     );
   },
 
   handleChange: function() {
     var afterNode = this.refs.after.getDOMNode();
-    var beforeNode = this.refs.before.getDOMNode();
-
     var after = afterNode.valueAsDate ||
       new Date(Date.parse(afterNode.value));
+
+    var beforeNode = this.refs.before.getDOMNode();
     var before = beforeNode.valueAsDate ||
       new Date(Date.parse(beforeNode.value));
 
-    this.props.onFilter(after, before);
+    var minimum = this.refs.minimum.getDOMNode().valueAsNumber;
+    var maximum = this.refs.maximum.getDOMNode().valueAsNumber;
+
+    this.props.onFilter(after, before, minimum, maximum);
   }
 });
 
