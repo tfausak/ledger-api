@@ -27,4 +27,4 @@ favicon.ico
 
 # Back end
 NETWORK:
-api/entries
+api
