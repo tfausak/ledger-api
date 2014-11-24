@@ -105,6 +105,7 @@ var Content = React.createClass({
 
           <div className="col-sm-8">
             <Search onSearch={this.handleSearch} />
+            <Filter onFilter={this.handleFilter} />
             <Entries
               entries={this.sortedEntries()}
               onUpdate={this.props.onUpdateEntry}
@@ -117,12 +118,16 @@ var Content = React.createClass({
   },
   getInitialState: function() {
     return {
+      after: null,
+      before: null,
       query: ''
     };
   },
 
+  handleFilter: function(after, before) {
+    this.setState({after: after, before: before});
+  },
   handleSearch: function(query) {
-    console.debug(query);
     this.setState({query: query});
   },
 
@@ -131,11 +136,24 @@ var Content = React.createClass({
       if (this.state.query) {
         var haystack = entry.name.toLowerCase();
         var needle = this.state.query.toLowerCase();
-        return haystack.indexOf(needle) !== -1;
+        if (haystack.indexOf(needle) === -1) {
+          return false;
+        }
       }
-      else {
-        return true;
+
+      if (this.state.after) {
+        if (entry.created < this.state.after) {
+          return false;
+        }
       }
+
+      if (this.state.before) {
+        if (entry.created > this.state.before) {
+          return false;
+        }
+      }
+
+      return true;
     }.bind(this));
   },
   sortedEntries: function() {
@@ -246,6 +264,50 @@ var Search = React.createClass({
 
   handleChange: function() {
     this.props.onSearch(this.refs.query.getDOMNode().value);
+  }
+});
+
+var Filter = React.createClass({
+  propTypes: {
+    onFilter: React.PropTypes.func.isRequired
+  },
+
+  render: function() {
+    return (
+      <form>
+        <div className="form-group">
+          <input
+            className="form-control"
+            onChange={this.handleChange}
+            placeholder="After"
+            ref="after"
+            type="date"
+            />
+        </div>
+
+        <div className="form-group">
+          <input
+            className="form-control"
+            onChange={this.handleChange}
+            placeholder="Before"
+            ref="before"
+            type="date"
+            />
+        </div>
+      </form>
+    );
+  },
+
+  handleChange: function() {
+    var afterNode = this.refs.after.getDOMNode();
+    var beforeNode = this.refs.before.getDOMNode();
+
+    var after = afterNode.valueAsDate ||
+      new Date(Date.parse(afterNode.value));
+    var before = beforeNode.valueAsDate ||
+      new Date(Date.parse(beforeNode.value));
+
+    this.props.onFilter(after, before);
   }
 });
 
