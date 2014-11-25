@@ -3,6 +3,7 @@
 module Ledger.Loader where
 
 import           Ledger.State             (State, defaultState)
+import           Ledger.Utilities         (getFileName)
 
 import           Data.Acid.Local          (openLocalStateFrom)
 import           Data.Acid.Memory         (openMemoryState)
@@ -18,13 +19,11 @@ import           Network                  (PortID (PortNumber))
 import           Network.Wai.Handler.Warp (Settings, defaultSettings, setHost,
                                            setPort)
 import           Prelude                  hiding (lookup)
-import           System.Environment       (getArgs, getEnv)
-import           System.FilePath          ((</>))
+import           System.Environment       (getArgs)
 
 loadConfig :: IO Config
 loadConfig = do
-  directory <- getEnv "OPENSHIFT_DATA_DIR"
-  let name = directory </> "ledger.cfg"
+  name <- getFileName "ledger.cfg"
   let paths = [Required name]
   load paths
 
