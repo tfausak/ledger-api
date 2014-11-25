@@ -9,7 +9,8 @@ import           Data.Acid.Memory         (openMemoryState)
 import           Data.Acid.Remote         (CommChannel, openRemoteState,
                                            sharedSecretPerform,
                                            skipAuthenticationPerform)
-import           Data.Configurator        (Worth (Required), load, lookup)
+import           Data.Configurator        (Worth (Required), load, lookup,
+                                           require)
 import           Data.Configurator.Types  (Config)
 import           Data.Maybe               (catMaybes)
 import           Data.String              (fromString)
@@ -27,11 +28,19 @@ loadConfig = do
   let paths = [Required name]
   load paths
 
-loadSettings :: IO Settings
-loadSettings = do
-  [ip, port] <- getArgs
-  putStrLn ("http://" ++ ip ++ ":" ++ port)
-  return (setHost (fromString ip) (setPort (read port) defaultSettings))
+loadSettings :: Config -> IO Settings
+loadSettings config = do
+  args <- getArgs
+  port <- require config "warp.port"
+  let settings = case args of
+        [ipString, portString] ->
+          setHost (fromString ipString) $
+          setPort (read portString)
+          defaultSettings
+        _ ->
+          setPort port
+          defaultSettings
+  return settings
 
 loadState :: Config -> IO State
 loadState config = do

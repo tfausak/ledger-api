@@ -8,7 +8,6 @@ import           Network.Wai.Handler.Warp (runSettings)
 main :: IO ()
 main = do
   config <- loadConfig
-  settings <- loadSettings
+  settings <- loadSettings config
   state <- loadState config
   runSettings settings (application config state)
-
