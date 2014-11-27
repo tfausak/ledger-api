@@ -23,8 +23,12 @@ import           System.Environment       (getArgs)
 
 loadConfig :: IO Config
 loadConfig = do
-  name <- getFileName "ledger.cfg"
-  let paths = [Required name]
+  defaultName <- getFileName "ledger.cfg"
+  args <- getArgs
+  let names = case args of
+        [customName] -> [defaultName, customName]
+        _ -> [defaultName]
+  let paths = map Required names
   load paths
 
 loadSettings :: Config -> IO Settings
