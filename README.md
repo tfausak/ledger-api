@@ -32,7 +32,7 @@ acid-state { directory = "state/ledger" }
 
 ``` sh
 $ .cabal-sandbox/bin/ledger tmp/ledger.cfg
-# http://localhost:8888/#secret
+# http://localhost:8888/entries?key=secret
 ```
 
 For a complete list of options, check out [the default configuration][4].
