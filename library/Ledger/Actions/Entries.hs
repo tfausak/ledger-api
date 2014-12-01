@@ -112,9 +112,7 @@ createEntry entryRequest = do
   liftIO $ do
     oldEntries <- query state QueryEntries
     entry <- toEntry oldEntries entryRequest
-    let newEntries = Map.insert (Entry.number entry) entry oldEntries
-    update state (WriteEntries newEntries)
-    return entry
+    insert entry oldEntries state
 
 respondWithEntry :: Entry.Entry -> Action
 respondWithEntry entry = do
@@ -152,6 +150,10 @@ insertEntry entry = do
   (_, _, state) <- ask
   liftIO $ do
     oldEntries <- query state QueryEntries
-    let newEntries = Map.insert (Entry.number entry) entry oldEntries
-    update state (WriteEntries newEntries)
-    return entry
+    insert entry oldEntries state
+
+insert :: Entry.Entry -> Entry.Entries -> State -> IO Entry.Entry
+insert entry oldEntries state = do
+  let newEntries = Map.insert (Entry.number entry) entry oldEntries
+  update state (WriteEntries newEntries)
+  return entry
