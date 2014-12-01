@@ -15,29 +15,7 @@ category: Web
 author: Taylor Fausak <taylor@fausak.me>
 tested-with: GHC ==7.8.*
 data-files:
-    all.min.css
-    all.min.js
     ledger.cfg
-    ledger.html
-    ledger.manifest
-    static/apple-touch-icon-precomposed-57.png
-    static/apple-touch-icon-precomposed-57@2x.png
-    static/apple-touch-icon-precomposed-60@3x.png
-    static/apple-touch-icon-precomposed-72.png
-    static/apple-touch-icon-precomposed-72@2x.png
-    static/apple-touch-icon-precomposed-76.png
-    static/apple-touch-icon-precomposed-76@2x.png
-    static/apple-touch-startup-image-320x460.png
-    static/apple-touch-startup-image-320x460@2x.png
-    static/apple-touch-startup-image-320x548@2x.png
-    static/apple-touch-startup-image-375x647@2x.png
-    static/apple-touch-startup-image-394x736@3x.png
-    static/apple-touch-startup-image-414x716@3x.png
-    static/apple-touch-startup-image-748x1024.png
-    static/apple-touch-startup-image-748x1024@2x.png
-    static/apple-touch-startup-image-768x1004.png
-    static/apple-touch-startup-image-768x1004@2x.png
-    static/favicon.ico
 data-dir: data
 extra-source-files:
     CHANGELOG.md
