@@ -1,7 +1,6 @@
 module Ledger.Actions
-  ( module Ledger.Actions.Common
-  , module Ledger.Actions.Entries
+  ( module Actions
   ) where
 
-import           Ledger.Actions.Common
-import           Ledger.Actions.Entries
+import           Ledger.Actions.Common  as Actions
+import           Ledger.Actions.Entries as Actions
