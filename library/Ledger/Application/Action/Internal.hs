@@ -2,7 +2,8 @@
 
 module Ledger.Application.Action.Internal where
 
-import Ledger.Application.Action.Common (Action, badRequest, forbidden)
+import Ledger.Application.Action.Common (Action, badRequest, forbidden,
+                                         notFound)
 import Ledger.Application.Model (Entry, Key, KeyId)
 import Ledger.Application.State (State)
 import Ledger.Application.State.Internal (queryEntry, queryKey)
@@ -54,6 +55,13 @@ getRequest = asks fst
 
 getState :: (Monad m) => ReaderT (a, AcidState State) m (AcidState State)
 getState = asks snd
+
+withEntry :: Key -> Text -> (Entry -> Action) -> Action
+withEntry key entryId' action = do
+    maybeEntry <- getEntry key entryId'
+    case maybeEntry of
+        Just entry -> action entry
+        Nothing -> notFound
 
 withEntryInput :: (EntryInput -> Action) -> Action
 withEntryInput action = do

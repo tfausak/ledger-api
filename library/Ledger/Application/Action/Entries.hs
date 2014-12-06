@@ -1,8 +1,8 @@
 module Ledger.Application.Action.Entries where
 
-import Ledger.Application.Action.Common (Action, json, notFound)
-import Ledger.Application.Action.Internal (getState, withEntryInput, withKey)
-import qualified Ledger.Application.Action.Internal as Internal
+import Ledger.Application.Action.Common (Action, json)
+import Ledger.Application.Action.Internal (getState, withEntry, withEntryInput,
+                                           withKey)
 import Ledger.Application.Model (entryId)
 import Ledger.Application.State.Internal (createEntry, queryEntriesForKey,
                                           updateEntries)
@@ -25,34 +25,29 @@ postEntries = withKey $ \ key ->
     withEntryInput $ \ entryInput -> do
         state <- getState
         entry <- liftIO (createEntry state key entryInput)
-        return (json status201 [] (toEntryOutput entry))
+        let entryOutput = toEntryOutput entry
+        return (json status201 [] entryOutput)
 
 getEntry :: Text -> Action
-getEntry entryId' = withKey $ \ key -> do
-    maybeEntry <- Internal.getEntry key entryId'
-    case maybeEntry of
-        Just entry -> do
-            let entryOutput = toEntryOutput entry
-            return (json status200 [] entryOutput)
-        Nothing -> notFound
+getEntry entryId' = withKey $ \ key ->
+    withEntry key entryId' $ \ entry -> do
+        let entryOutput = toEntryOutput entry
+        return (json status200 [] entryOutput)
 
 putEntry :: Text -> Action
-putEntry entryId' = withKey $ \ key -> do
-    state <- getState
-    maybeEntry <- Internal.getEntry key entryId'
-    case maybeEntry of
-        Just entry -> withEntryInput $ \ entryInput -> do
+putEntry entryId' = withKey $ \ key ->
+    withEntry key entryId' $ \ entry ->
+        withEntryInput $ \ entryInput -> do
+            state <- getState
             let updatedEntry = fromEntryInput entry entryInput
             _ <- liftIO (updateEntries state (updateIx (entryId entry) updatedEntry))
-            return (json status201 [] (toEntryOutput updatedEntry))
-        Nothing -> notFound
+            let entryOutput = toEntryOutput entry
+            return (json status201 [] entryOutput)
 
 deleteEntry :: Text -> Action
-deleteEntry entryId' = withKey $ \ key -> do
-    state <- getState
-    maybeEntry <- Internal.getEntry key entryId'
-    case maybeEntry of
-        Just entry -> do
-            _ <- liftIO (updateEntries state (deleteIx (entryId entry)))
-            return (json status200 [] (toEntryOutput entry))
-        Nothing -> notFound
+deleteEntry entryId' = withKey $ \ key ->
+    withEntry key entryId' $ \ entry -> do
+        state <- getState
+        _ <- liftIO (updateEntries state (deleteIx (entryId entry)))
+        let entryOutput = toEntryOutput entry
+        return (json status200 [] entryOutput)
