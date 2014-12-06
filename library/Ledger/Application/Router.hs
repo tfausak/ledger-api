@@ -30,6 +30,7 @@ route request =
                 _ -> Action.notAllowed
             ["keys", keyId] -> case method of
                 "GET" -> Action.getKey keyId
+                "DELETE" -> Action.deleteKey keyId
                 _ -> Action.notAllowed
 
             _ -> Action.notFound
