@@ -10,7 +10,7 @@ import Ledger.Application.Transformer (EntryInput, fromEntryInput)
 
 import Control.Monad.IO.Class (liftIO)
 import Data.Acid (AcidState, query, update)
-import Data.IxSet (deleteIx, getEQ, getOne, insert)
+import Data.IxSet (deleteIx, getEQ, getOne, insert, updateIx)
 import Prelude hiding (lookup)
 
 createEntry :: AcidState State -> Key -> EntryInput -> IO Entry
@@ -50,6 +50,12 @@ queryKey state keyId = do
 
 queryKeys :: AcidState State -> IO Keys
 queryKeys state = query state QueryKeys
+
+updateEntry :: AcidState State -> Entry -> (Entry -> Entry) -> IO Entry
+updateEntry state entry f = do
+    let updatedEntry = f entry
+    _ <- updateEntries state (updateIx (entryId entry) updatedEntry)
+    return updatedEntry
 
 updateEntries :: AcidState State -> (Entries -> Entries) -> IO Entries
 updateEntries state f = do

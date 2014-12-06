@@ -3,14 +3,13 @@ module Ledger.Application.Action.Entries where
 import Ledger.Application.Action.Common (Action, json)
 import Ledger.Application.Action.Internal (getState, withEntry, withEntryInput,
                                            withKey)
-import Ledger.Application.Model (entryId)
 import Ledger.Application.State.Internal (createEntry, queryEntriesForKey,
-                                          updateEntries)
+                                          updateEntry)
 import qualified Ledger.Application.State.Internal as Internal (deleteEntry)
 import Ledger.Application.Transformer (fromEntryInput, toEntryOutput)
 
 import Control.Monad.IO.Class (liftIO)
-import Data.IxSet (toList, updateIx)
+import Data.IxSet (toList)
 import Data.Text (Text)
 import Network.HTTP.Types (status200, status201)
 
@@ -32,27 +31,27 @@ postEntries =
         return (json status201 [] entryOutput)
 
 getEntry :: Text -> Action
-getEntry entryId' =
+getEntry entryId =
     withKey $ \ key ->
-    withEntry key entryId' $ \ entry -> do
+    withEntry key entryId $ \ entry -> do
         let entryOutput = toEntryOutput entry
         return (json status200 [] entryOutput)
 
 putEntry :: Text -> Action
-putEntry entryId' =
+putEntry entryId =
     withKey $ \ key ->
-    withEntry key entryId' $ \ entry ->
+    withEntry key entryId $ \ entry ->
     withEntryInput $ \ entryInput -> do
-            state <- getState
-            let updatedEntry = fromEntryInput entry entryInput
-            _ <- liftIO (updateEntries state (updateIx (entryId entry) updatedEntry))
-            let entryOutput = toEntryOutput entry
-            return (json status201 [] entryOutput)
+        state <- getState
+        let update = flip fromEntryInput entryInput
+        updatedEntry <- liftIO (updateEntry state entry update)
+        let entryOutput = toEntryOutput updatedEntry
+        return (json status201 [] entryOutput)
 
 deleteEntry :: Text -> Action
-deleteEntry entryId' =
+deleteEntry entryId =
     withKey $ \ key ->
-    withEntry key entryId' $ \ entry -> do
+    withEntry key entryId $ \ entry -> do
         state <- getState
         _ <- liftIO (Internal.deleteEntry state entry)
         let entryOutput = toEntryOutput entry
