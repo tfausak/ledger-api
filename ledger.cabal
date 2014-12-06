@@ -1,5 +1,5 @@
 name: ledger
-version: 0.1.5
+version: 0.0.0
 cabal-version: >=1.10
 build-type: Simple
 license: MIT
@@ -29,7 +29,6 @@ source-repository head
 library
     build-depends:
         base ==4.*,
-        Cabal >=1.10,
         acid-state ==0.12.*,
         aeson ==0.8.*,
         bytestring ==0.10.*,
@@ -37,29 +36,42 @@ library
         containers ==0.5.*,
         filepath ==1.*,
         http-types ==0.8.*,
+        ixset ==1.*,
         mtl ==2.*,
         network ==2.*,
+        random ==1.*,
         safecopy ==0.8.*,
         text ==1.*,
         time ==1.*,
-        transformers ==0.4.*,
+        transformers ==0.3.*,
         wai ==3.*,
         wai-extra ==3.*,
         warp ==3.*
     exposed-modules:
         Ledger
-        Ledger.Actions
-        Ledger.Actions.Common
-        Ledger.Actions.Entries
         Ledger.Application
-        Ledger.Loader
+        Ledger.Application.Action
+        Ledger.Application.Action.Common
+        Ledger.Application.Action.Entries
+        Ledger.Application.Action.Internal
+        Ledger.Application.Action.Keys
+        Ledger.Application.Action.Root
+        Ledger.Application.Application
+        Ledger.Application.Middleware
+        Ledger.Application.Model
+        Ledger.Application.Model.Entry
+        Ledger.Application.Model.Key
+        Ledger.Application.Router
+        Ledger.Application.State
+        Ledger.Application.State.Internal
+        Ledger.Application.Transformer
+        Ledger.Application.Transformer.EntryInput
+        Ledger.Application.Transformer.EntryOutput
+        Ledger.Application.Transformer.KeyOutput
+        Ledger.Config
         Ledger.Main
-        Ledger.Models.Entry
-        Ledger.Models.Entry.Request
-        Ledger.Models.Entry.Response
-        Ledger.Router
+        Ledger.Settings
         Ledger.State
-        Ledger.Utilities
     exposed: True
     buildable: True
     default-language: Haskell2010

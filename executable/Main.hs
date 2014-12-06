@@ -1,3 +1,3 @@
 module Main (main) where
 
-import           Ledger (main)
+import Ledger (main)
