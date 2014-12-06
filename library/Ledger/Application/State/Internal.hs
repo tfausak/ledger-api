@@ -1,7 +1,8 @@
 module Ledger.Application.State.Internal where
 
 import Ledger.Application.Model (Entry, EntryDeleted, EntryId, Key, KeyDeleted,
-                                 KeyId, entryId, entryKey, newEntry)
+                                 KeyId, entryDeleted, entryId, entryKey,
+                                 newEntry)
 import Ledger.Application.State (Entries, Keys, QueryEntries (QueryEntries),
                                  QueryKeys (QueryKeys), State,
                                  UpdateEntries (UpdateEntries),
@@ -10,7 +11,8 @@ import Ledger.Application.Transformer (EntryInput, fromEntryInput)
 
 import Control.Monad.IO.Class (liftIO)
 import Data.Acid (AcidState, query, update)
-import Data.IxSet (deleteIx, getEQ, getOne, insert, updateIx)
+import Data.IxSet (getEQ, getOne, insert, updateIx)
+import Data.Time (getCurrentTime)
 import Prelude hiding (lookup)
 
 createEntry :: AcidState State -> Key -> EntryInput -> IO Entry
@@ -21,8 +23,12 @@ createEntry state key entryInput = do
     _ <- updateEntries state (insert fullEntry)
     return fullEntry
 
-deleteEntry :: AcidState State -> Entry -> IO Entries
-deleteEntry state entry = updateEntries state (deleteIx (entryId entry))
+deleteEntry :: AcidState State -> Entry -> IO Entry
+deleteEntry state entry = do
+    now <- getCurrentTime
+    let deletedEntry = entry { entryDeleted = Just now }
+    _ <- updateEntries state (updateIx (entryId entry) deletedEntry)
+    return deletedEntry
 
 queryEntries :: AcidState State -> IO Entries
 queryEntries state = query state QueryEntries

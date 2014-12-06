@@ -53,6 +53,6 @@ deleteEntry entryId =
     withKey $ \ key ->
     withEntry key entryId $ \ entry -> do
         state <- getState
-        _ <- liftIO (Internal.deleteEntry state entry)
-        let entryOutput = toEntryOutput entry
+        deletedEntry <- liftIO (Internal.deleteEntry state entry)
+        let entryOutput = toEntryOutput deletedEntry
         return (json status200 [] entryOutput)
