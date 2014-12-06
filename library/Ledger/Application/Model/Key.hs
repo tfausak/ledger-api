@@ -11,7 +11,6 @@ import Data.Text (Text, pack)
 import Data.Time (UTCTime (UTCTime), fromGregorian, getCurrentTime, utctDay,
                   utctDayTime)
 import Data.Typeable (Typeable)
-import Prelude hiding (id)
 import System.Random (newStdGen, randomRs)
 
 type KeyDeleted = Maybe UTCTime

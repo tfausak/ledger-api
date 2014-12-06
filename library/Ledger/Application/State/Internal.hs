@@ -13,7 +13,6 @@ import Control.Monad.IO.Class (liftIO)
 import Data.Acid (AcidState, query, update)
 import Data.IxSet (getEQ, getOne, insert, updateIx)
 import Data.Time (getCurrentTime)
-import Prelude hiding (lookup)
 
 createEntry :: AcidState State -> Key -> EntryInput -> IO Entry
 createEntry state key entryInput = do
