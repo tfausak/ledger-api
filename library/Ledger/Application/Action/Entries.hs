@@ -1,7 +1,7 @@
 module Ledger.Application.Action.Entries where
 
-import Ledger.Application.Action.Common (Action, badRequest, json, notFound)
-import Ledger.Application.Action.Internal (getEntryInput, getState, withKey)
+import Ledger.Application.Action.Common (Action, json, notFound)
+import Ledger.Application.Action.Internal (getState, withEntryInput, withKey)
 import qualified Ledger.Application.Action.Internal as Internal
 import Ledger.Application.Model (entryId)
 import Ledger.Application.State.Internal (createEntry, queryEntriesForKey,
@@ -21,14 +21,11 @@ getEntries = withKey $ \ key -> do
     return (json status200 [] entryOutputs)
 
 postEntries :: Action
-postEntries = withKey $ \ key -> do
-    state <- getState
-    maybeEntryInput <- getEntryInput
-    case maybeEntryInput of
-        Just entryInput -> do
-            entry <- liftIO (createEntry state key entryInput)
-            return (json status201 [] (toEntryOutput entry))
-        Nothing -> badRequest
+postEntries = withKey $ \ key ->
+    withEntryInput $ \ entryInput -> do
+        state <- getState
+        entry <- liftIO (createEntry state key entryInput)
+        return (json status201 [] (toEntryOutput entry))
 
 getEntry :: Text -> Action
 getEntry entryId' = withKey $ \ key -> do
@@ -44,14 +41,10 @@ putEntry entryId' = withKey $ \ key -> do
     state <- getState
     maybeEntry <- Internal.getEntry key entryId'
     case maybeEntry of
-        Just entry -> do
-            maybeEntryInput <- getEntryInput
-            case maybeEntryInput of
-                Just entryInput -> do
-                    let updatedEntry = fromEntryInput entry entryInput
-                    _ <- liftIO (updateEntries state (updateIx (entryId entry) updatedEntry))
-                    return (json status201 [] (toEntryOutput updatedEntry))
-                Nothing -> badRequest
+        Just entry -> withEntryInput $ \ entryInput -> do
+            let updatedEntry = fromEntryInput entry entryInput
+            _ <- liftIO (updateEntries state (updateIx (entryId entry) updatedEntry))
+            return (json status201 [] (toEntryOutput updatedEntry))
         Nothing -> notFound
 
 deleteEntry :: Text -> Action
