@@ -1,8 +1,8 @@
 module Ledger.Application.State.Internal where
 
-import Ledger.Application.Model (Entry, EntryDeleted, EntryId, Key, KeyDeleted,
-                                 KeyId, entryDeleted, entryId, entryKey,
-                                 newEntry)
+import Ledger.Application.Model (Entry, EntryDeleted (EntryDeleted), EntryId,
+                                 Key, KeyDeleted (KeyDeleted), KeyId,
+                                 entryDeleted, entryId, entryKey, newEntry)
 import Ledger.Application.State (Entries, Keys, QueryEntries (QueryEntries),
                                  QueryKeys (QueryKeys), State,
                                  UpdateEntries (UpdateEntries),
@@ -25,7 +25,7 @@ createEntry state key entryInput = do
 deleteEntry :: AcidState State -> Entry -> IO Entry
 deleteEntry state entry = do
     now <- getCurrentTime
-    let deletedEntry = entry { entryDeleted = Just now }
+    let deletedEntry = entry { entryDeleted = EntryDeleted (Just now) }
     _ <- updateEntries state (updateIx (entryId entry) deletedEntry)
     return deletedEntry
 
@@ -35,7 +35,7 @@ queryEntries state = query state QueryEntries
 queryEntriesForKey :: AcidState State -> Key -> IO Entries
 queryEntriesForKey state key = do
     allEntries <- liftIO (queryEntries state)
-    let notDeletedEntries = getEQ (Nothing :: EntryDeleted) allEntries
+    let notDeletedEntries = getEQ (EntryDeleted Nothing) allEntries
     let entries = getEQ key notDeletedEntries
     return entries
 
@@ -48,7 +48,7 @@ queryEntry _ _ _ = return Nothing
 queryKey :: AcidState State -> KeyId -> IO (Maybe Key)
 queryKey state keyId = do
     allKeys <- queryKeys state
-    let notDeletedKeys = getEQ (Nothing :: KeyDeleted) allKeys
+    let notDeletedKeys = getEQ (KeyDeleted Nothing) allKeys
     let keys = getEQ keyId notDeletedKeys
     let maybeKey = getOne keys
     return maybeKey

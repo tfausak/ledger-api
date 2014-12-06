@@ -13,7 +13,11 @@ import Data.Time (UTCTime (UTCTime), fromGregorian, getCurrentTime, utctDay,
 import Data.Typeable (Typeable)
 import System.Random (newStdGen, randomRs)
 
-type KeyDeleted = Maybe UTCTime
+newtype KeyDeleted = KeyDeleted (Maybe UTCTime)
+    deriving (Data, Eq, Ord, Read, Show, Typeable)
+
+$(deriveSafeCopy 1 'base ''KeyDeleted)
+
 type KeyId = Text
 
 data Key = Key
@@ -39,7 +43,7 @@ defaultKey = Key
         { utctDay = fromGregorian 2000 1 1
         , utctDayTime = 0
         }
-    , keyDeleted = Nothing
+    , keyDeleted = KeyDeleted Nothing
     , keyId = pack ""
     }
 

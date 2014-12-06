@@ -16,13 +16,17 @@ import Data.Typeable (Typeable)
 import Prelude hiding (id)
 import System.Random (randomRIO)
 
-type EntryDeleted = Maybe UTCTime
+newtype EntryDeleted = EntryDeleted (Maybe UTCTime)
+    deriving (Data, Eq, Ord, Read, Show, Typeable)
+
+$(deriveSafeCopy 1 'base ''EntryDeleted)
+
 type EntryId = Integer
 
 data Entry = Entry
     { entryAmount      :: Rational
     , entryCreated     :: UTCTime
-    , entryDeleted     :: Maybe UTCTime
+    , entryDeleted     :: EntryDeleted
     , entryDescription :: Text
     , entryKey         :: Key
     , entryId          :: EntryId
@@ -48,7 +52,7 @@ defaultEntry = Entry
         { utctDay = fromGregorian 2000 1 1
         , utctDayTime = 0
         }
-    , entryDeleted = Nothing
+    , entryDeleted = EntryDeleted Nothing
     , entryDescription = pack ""
     , entryKey = defaultKey
     , entryId = 0
