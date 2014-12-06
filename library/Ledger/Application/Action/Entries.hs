@@ -14,14 +14,16 @@ import Data.Text (Text)
 import Network.HTTP.Types (status200, status201)
 
 getEntries :: Action
-getEntries = withKey $ \ key -> do
-    state <- getState
-    entries <- liftIO (queryEntriesForKey state key)
-    let entryOutputs = map toEntryOutput (toList entries)
-    return (json status200 [] entryOutputs)
+getEntries =
+    withKey $ \ key -> do
+        state <- getState
+        entries <- liftIO (queryEntriesForKey state key)
+        let entryOutputs = map toEntryOutput (toList entries)
+        return (json status200 [] entryOutputs)
 
 postEntries :: Action
-postEntries = withKey $ \ key ->
+postEntries =
+    withKey $ \ key ->
     withEntryInput $ \ entryInput -> do
         state <- getState
         entry <- liftIO (createEntry state key entryInput)
@@ -29,15 +31,17 @@ postEntries = withKey $ \ key ->
         return (json status201 [] entryOutput)
 
 getEntry :: Text -> Action
-getEntry entryId' = withKey $ \ key ->
+getEntry entryId' =
+    withKey $ \ key ->
     withEntry key entryId' $ \ entry -> do
         let entryOutput = toEntryOutput entry
         return (json status200 [] entryOutput)
 
 putEntry :: Text -> Action
-putEntry entryId' = withKey $ \ key ->
+putEntry entryId' =
+    withKey $ \ key ->
     withEntry key entryId' $ \ entry ->
-        withEntryInput $ \ entryInput -> do
+    withEntryInput $ \ entryInput -> do
             state <- getState
             let updatedEntry = fromEntryInput entry entryInput
             _ <- liftIO (updateEntries state (updateIx (entryId entry) updatedEntry))
@@ -45,7 +49,8 @@ putEntry entryId' = withKey $ \ key ->
             return (json status201 [] entryOutput)
 
 deleteEntry :: Text -> Action
-deleteEntry entryId' = withKey $ \ key ->
+deleteEntry entryId' =
+    withKey $ \ key ->
     withEntry key entryId' $ \ entry -> do
         state <- getState
         _ <- liftIO (updateEntries state (deleteIx (entryId entry)))
