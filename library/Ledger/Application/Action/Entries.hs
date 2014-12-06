@@ -6,10 +6,11 @@ import Ledger.Application.Action.Internal (getState, withEntry, withEntryInput,
 import Ledger.Application.Model (entryId)
 import Ledger.Application.State.Internal (createEntry, queryEntriesForKey,
                                           updateEntries)
+import qualified Ledger.Application.State.Internal as Internal (deleteEntry)
 import Ledger.Application.Transformer (fromEntryInput, toEntryOutput)
 
 import Control.Monad.IO.Class (liftIO)
-import Data.IxSet (deleteIx, toList, updateIx)
+import Data.IxSet (toList, updateIx)
 import Data.Text (Text)
 import Network.HTTP.Types (status200, status201)
 
@@ -53,6 +54,6 @@ deleteEntry entryId' =
     withKey $ \ key ->
     withEntry key entryId' $ \ entry -> do
         state <- getState
-        _ <- liftIO (updateEntries state (deleteIx (entryId entry)))
+        _ <- liftIO (Internal.deleteEntry state entry)
         let entryOutput = toEntryOutput entry
         return (json status200 [] entryOutput)

@@ -1,7 +1,7 @@
 module Ledger.Application.State.Internal where
 
 import Ledger.Application.Model (Entry, EntryDeleted, EntryId, Key, KeyDeleted,
-                                 KeyId, entryKey, newEntry)
+                                 KeyId, entryId, entryKey, newEntry)
 import Ledger.Application.State (Entries, Keys, QueryEntries (QueryEntries),
                                  QueryKeys (QueryKeys), State,
                                  UpdateEntries (UpdateEntries),
@@ -10,7 +10,7 @@ import Ledger.Application.Transformer (EntryInput, fromEntryInput)
 
 import Control.Monad.IO.Class (liftIO)
 import Data.Acid (AcidState, query, update)
-import Data.IxSet (getEQ, getOne, insert)
+import Data.IxSet (deleteIx, getEQ, getOne, insert)
 import Prelude hiding (lookup)
 
 createEntry :: AcidState State -> Key -> EntryInput -> IO Entry
@@ -20,6 +20,9 @@ createEntry state key entryInput = do
     let fullEntry = fromEntryInput entryWithKey entryInput
     _ <- updateEntries state (insert fullEntry)
     return fullEntry
+
+deleteEntry :: AcidState State -> Entry -> IO Entries
+deleteEntry state entry = updateEntries state (deleteIx (entryId entry))
 
 queryEntries :: AcidState State -> IO Entries
 queryEntries state = query state QueryEntries
@@ -32,9 +35,9 @@ queryEntriesForKey state key = do
     return entries
 
 queryEntry :: AcidState State -> Key -> Either a (EntryId, b) -> IO (Maybe Entry)
-queryEntry state key (Right (entryId, _)) = do
+queryEntry state key (Right (eid, _)) = do
     entries <- queryEntriesForKey state key
-    return (getOne (getEQ entryId entries))
+    return (getOne (getEQ eid entries))
 queryEntry _ _ _ = return Nothing
 
 queryKey :: AcidState State -> KeyId -> IO (Maybe Key)
