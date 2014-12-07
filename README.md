@@ -1,5 +1,7 @@
 # [Ledger][1]
 
+[![Build Status][2]][3]
+
 Watch your money fly away.
 
 - [Installation](#installation)
@@ -7,7 +9,7 @@ Watch your money fly away.
 
 ## Installation
 
-To install Ledger, you'll need [The Haskell Platform][2] version 2014.2.0.0.
+To install Ledger, you'll need [The Haskell Platform][4] version 2014.2.0.0.
 
 ``` sh
 $ git clone https://github.com/tfausak/ledger.git
@@ -21,7 +23,7 @@ $ cabal run
 
 ## Configuration
 
-To configure Ledger, create a [Configurator][3] file.
+To configure Ledger, create a [Configurator][5] file.
 
 ``` cfg
 # tmp/ledger.cfg
@@ -34,9 +36,11 @@ $ cabal run tmp/ledger.cfg
 # http://localhost:8888
 ```
 
-For a complete list of options, check out [the default configuration][4].
+For a complete list of options, check out [the default configuration][6].
 
 [1]: https://github.com/tfausak/ledger
-[2]: https://www.haskell.org/platform/
-[3]: https://github.com/bos/configurator
-[4]: data/ledger.cfg
+[2]: https://travis-ci.org/tfausak/ledger.svg?branch=master
+[3]: https://travis-ci.org/tfausak/ledger
+[4]: https://www.haskell.org/platform/
+[5]: https://github.com/bos/configurator
+[6]: data/ledger.cfg
