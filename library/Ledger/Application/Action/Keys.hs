@@ -2,15 +2,16 @@ module Ledger.Application.Action.Keys where
 
 import Ledger.Application.Action.Common (Action, json, notFound)
 import Ledger.Application.Action.Internal (getState)
-import Ledger.Application.Model (newKey, keyDeleted, KeyDeleted (KeyDeleted), keyId)
+import Ledger.Application.Model (KeyDeleted (KeyDeleted), keyDeleted, keyId,
+                                 newKey)
 import Ledger.Application.State.Internal (queryKey, updateKeys)
 import Ledger.Application.Transformer (toKeyOutput)
 
 import Control.Monad.IO.Class (liftIO)
 import Data.IxSet (insert, updateIx)
 import Data.Text (Text)
-import Network.HTTP.Types (status200, status201)
 import Data.Time (getCurrentTime)
+import Network.HTTP.Types (status200, status201)
 
 postKeys :: Action
 postKeys = do
