@@ -45,6 +45,7 @@ library
         time ==1.*,
         transformers ==0.3.*,
         wai ==3.*,
+        wai-cors ==0.2.*,
         wai-extra ==3.*,
         warp ==3.*
     exposed-modules:
