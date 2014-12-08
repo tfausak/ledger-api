@@ -7,7 +7,7 @@ module Ledger.Application.State where
 import Ledger.Application.Model (Entry, Key)
 
 import Control.Monad.Reader (ask)
-import Control.Monad.State (modify)
+import Control.Monad.State (gets, modify)
 import Data.Acid (Query, Update, liftQuery, makeAcidic)
 import Data.IxSet (IxSet, empty, insert)
 import Data.SafeCopy (base, deriveSafeCopy)
@@ -34,7 +34,7 @@ queryKeys = fmap stateKeys ask
 updateKeys :: Keys -> Update State Keys
 updateKeys keys = do
     _ <- modify (\ state -> state { stateKeys = keys })
-    return keys
+    gets stateKeys
 
 insertKey :: Key -> Update State Key
 insertKey key = do
@@ -51,7 +51,7 @@ queryEntries = fmap stateEntries ask
 updateEntries :: Entries -> Update State Entries
 updateEntries entries = do
     _ <- modify (\ state -> state { stateEntries = entries })
-    return entries
+    gets stateEntries
 
 -- TH
 
