@@ -8,8 +8,8 @@ import Ledger.Application.Model (Entry, Key)
 
 import Control.Monad.Reader (ask)
 import Control.Monad.State (modify)
-import Data.Acid (Query, Update, makeAcidic)
-import Data.IxSet (IxSet, empty)
+import Data.Acid (Query, Update, liftQuery, makeAcidic)
+import Data.IxSet (IxSet, empty, insert)
 import Data.SafeCopy (base, deriveSafeCopy)
 
 type Entries = IxSet Entry
@@ -28,6 +28,13 @@ defaultState = State
     , stateKeys = empty
     }
 
+insertKey :: Key -> Update State Key
+insertKey key = do
+    oldKeys <- liftQuery queryKeys
+    let newKeys = insert key oldKeys
+    _ <- updateKeys newKeys
+    return key
+
 queryEntries :: Query State Entries
 queryEntries = fmap stateEntries ask
 
@@ -45,7 +52,8 @@ updateKeys keys = do
     return keys
 
 $(makeAcidic ''State
-    [ 'queryEntries
+    [ 'insertKey
+    , 'queryEntries
     , 'queryKeys
     , 'updateEntries
     , 'updateKeys
