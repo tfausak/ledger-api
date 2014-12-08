@@ -13,24 +13,24 @@ import Data.Text (Text)
 import Data.Time (getCurrentTime)
 import Network.HTTP.Types (status200, status201)
 
-postKeys :: Action
-postKeys = do
+postKeysA :: Action
+postKeysA = do
     state <- getState
     key <- liftIO newKey
     key' <- liftIO (createKey state key)
     let keyOutput = toKeyOutput key'
     return (json status201 [] keyOutput)
 
-getKey :: Text -> Action
-getKey kid = do
+getKeyA :: Text -> Action
+getKeyA kid = do
     state <- getState
     maybeKey <- liftIO (queryKey state kid)
     case maybeKey of
         Just key -> return (json status200 [] (toKeyOutput key))
         Nothing -> notFound
 
-deleteKey :: Text -> Action
-deleteKey kid = do
+deleteKeyA :: Text -> Action
+deleteKeyA kid = do
     state <- getState
     maybeKey <- liftIO (queryKey state kid)
     case maybeKey of

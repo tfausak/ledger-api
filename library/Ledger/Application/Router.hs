@@ -26,11 +26,11 @@ route request =
                 _ -> Action.notAllowed
 
             ["keys"] -> case method of
-                "POST" -> Action.postKeys
+                "POST" -> Action.postKeysA
                 _ -> Action.notAllowed
             ["keys", keyId] -> case method of
-                "GET" -> Action.getKey keyId
-                "DELETE" -> Action.deleteKey keyId
+                "GET" -> Action.getKeyA keyId
+                "DELETE" -> Action.deleteKeyA keyId
                 _ -> Action.notAllowed
 
             _ -> Action.notFound
