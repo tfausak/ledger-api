@@ -4,12 +4,12 @@
 
 module Ledger.Application.State where
 
-import Ledger.Application.Model (Entry, Key)
+import Ledger.Application.Model (Entry, Key, KeyId)
 
 import Control.Monad.Reader (ask)
 import Control.Monad.State (gets, modify)
 import Data.Acid (Query, Update, liftQuery, makeAcidic)
-import Data.IxSet (IxSet, empty, insert)
+import Data.IxSet (IxSet, empty, insert, getEQ, getOne)
 import Data.SafeCopy (base, deriveSafeCopy)
 
 type Entries = IxSet Entry
@@ -30,6 +30,12 @@ defaultState = State
 
 queryKeys :: Query State Keys
 queryKeys = fmap stateKeys ask
+
+queryKey :: KeyId -> Query State (Maybe Key)
+queryKey kid = do
+    keys <- queryKeys
+    let maybeKey = getOne (getEQ kid keys)
+    return maybeKey
 
 updateKeys :: Keys -> Update State Keys
 updateKeys keys = do
@@ -58,9 +64,11 @@ updateEntries entries = do
 $(deriveSafeCopy 1 'base ''State)
 
 $(makeAcidic ''State
-    [ 'insertKey
-    , 'queryEntries
-    , 'queryKeys
-    , 'updateEntries
+    [ 'queryKeys
+    , 'queryKey
     , 'updateKeys
+    , 'insertKey
+
+    , 'queryEntries
+    , 'updateEntries
     ])
