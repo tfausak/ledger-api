@@ -4,10 +4,12 @@ import Ledger.Application.Action.Common (Action, json, notFound)
 import Ledger.Application.Action.Internal (getState)
 import Ledger.Application.Model (KeyDeleted (KeyDeleted), keyDeleted, keyId,
                                  newKey)
-import Ledger.Application.State.Internal (createKey, queryKey, updateKeys)
+import Ledger.Application.State (CreateKey (CreateKey))
+import Ledger.Application.State.Internal (queryKey, updateKeys)
 import Ledger.Application.Transformer (toKeyOutput)
 
 import Control.Monad.IO.Class (liftIO)
+import Data.Acid (update)
 import Data.IxSet (updateIx)
 import Data.Text (Text)
 import Data.Time (getCurrentTime)
@@ -17,7 +19,7 @@ postKeysA :: Action
 postKeysA = do
     state <- getState
     key <- liftIO newKey
-    key' <- liftIO (createKey state key)
+    key' <- liftIO (update state (CreateKey key))
     let keyOutput = toKeyOutput key'
     return (json status201 [] keyOutput)
 

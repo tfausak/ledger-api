@@ -3,8 +3,7 @@ module Ledger.Application.State.Internal where
 import Ledger.Application.Model (Entry, EntryDeleted (EntryDeleted), EntryId,
                                  Key, KeyDeleted (KeyDeleted), KeyId,
                                  entryDeleted, entryId, entryKey, newEntry)
-import Ledger.Application.State (Entries, InsertKey (InsertKey), Keys,
-                                 QueryEntries (QueryEntries),
+import Ledger.Application.State (Entries, Keys, QueryEntries (QueryEntries),
                                  QueryKeys (QueryKeys), State,
                                  UpdateEntries (UpdateEntries),
                                  UpdateKeys (UpdateKeys))
@@ -22,9 +21,6 @@ createEntry state key entryInput = do
     let fullEntry = fromEntryInput entryWithKey entryInput
     _ <- updateEntries state (insert fullEntry)
     return fullEntry
-
-createKey :: AcidState State -> Key -> IO Key
-createKey state key = update state (InsertKey key)
 
 deleteEntry :: AcidState State -> Entry -> IO Entry
 deleteEntry state entry = do
