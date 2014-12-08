@@ -20,13 +20,21 @@ data State = State
     , stateKeys    :: Keys
     } deriving (Read, Show)
 
-$(deriveSafeCopy 1 'base ''State)
-
 defaultState :: State
 defaultState = State
     { stateEntries = empty
     , stateKeys = empty
     }
+
+-- * Keys
+
+queryKeys :: Query State Keys
+queryKeys = fmap stateKeys ask
+
+updateKeys :: Keys -> Update State Keys
+updateKeys keys = do
+    _ <- modify (\ state -> state { stateKeys = keys })
+    return keys
 
 insertKey :: Key -> Update State Key
 insertKey key = do
@@ -35,21 +43,19 @@ insertKey key = do
     _ <- updateKeys newKeys
     return key
 
+-- * Entries
+
 queryEntries :: Query State Entries
 queryEntries = fmap stateEntries ask
-
-queryKeys :: Query State Keys
-queryKeys = fmap stateKeys ask
 
 updateEntries :: Entries -> Update State Entries
 updateEntries entries = do
     _ <- modify (\ state -> state { stateEntries = entries })
     return entries
 
-updateKeys :: Keys -> Update State Keys
-updateKeys keys = do
-    _ <- modify (\ state -> state { stateKeys = keys })
-    return keys
+-- TH
+
+$(deriveSafeCopy 1 'base ''State)
 
 $(makeAcidic ''State
     [ 'insertKey
