@@ -34,11 +34,15 @@ queryEntries = fmap stateEntries ask
 queryKeys :: Query State Keys
 queryKeys = fmap stateKeys ask
 
-updateEntries :: Entries -> Update State ()
-updateEntries entries = modify (\ state -> state { stateEntries = entries })
+updateEntries :: Entries -> Update State Entries
+updateEntries entries = do
+    _ <- modify (\ state -> state { stateEntries = entries })
+    return entries
 
-updateKeys :: Keys -> Update State ()
-updateKeys keys = modify (\ state -> state { stateKeys = keys })
+updateKeys :: Keys -> Update State Keys
+updateKeys keys = do
+    _ <- modify (\ state -> state { stateKeys = keys })
+    return keys
 
 $(makeAcidic ''State
     [ 'queryEntries

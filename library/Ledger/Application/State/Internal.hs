@@ -66,12 +66,12 @@ updateEntries :: AcidState State -> (Entries -> Entries) -> IO Entries
 updateEntries state f = do
     entries <- queryEntries state
     let updatedEntries = f entries
-    update state (UpdateEntries updatedEntries)
+    _ <- update state (UpdateEntries updatedEntries)
     return updatedEntries
 
 updateKeys :: AcidState State -> (Keys -> Keys) -> IO Keys
 updateKeys state f = do
     keys <- queryKeys state
     let updatedKeys = f keys
-    update state (UpdateKeys updatedKeys)
+    _ <- update state (UpdateKeys updatedKeys)
     return updatedKeys
