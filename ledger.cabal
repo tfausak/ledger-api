@@ -1,5 +1,5 @@
 name: ledger
-version: 0.0.0
+version: 0.1.5
 cabal-version: >=1.10
 build-type: Simple
 license: MIT
@@ -29,6 +29,7 @@ source-repository head
 library
     build-depends:
         base ==4.*,
+        Cabal >=1.10,
         acid-state ==0.12.*,
         aeson ==0.8.*,
         bytestring ==0.10.*,
