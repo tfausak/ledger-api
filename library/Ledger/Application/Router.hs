@@ -2,35 +2,35 @@
 
 module Ledger.Application.Router where
 
-import qualified Ledger.Application.Action as Action
+import Ledger.Application.Action
 
 import Network.Wai (Request, pathInfo, requestMethod)
 
-route :: Request -> Action.Action
+route :: Request -> Action
 route request =
     let path = pathInfo request
         method = requestMethod request
     in  case path of
             [] -> case method of
-                "GET" -> Action.getRoot
-                _ -> Action.notAllowed
+                "GET" -> getRootA
+                _ -> notAllowedA
 
             ["entries"] -> case method of
-                "GET" -> Action.getEntries
-                "POST" -> Action.postEntries
-                _ -> Action.notAllowed
-            ["entries", entryId] -> case method of
-                "GET" -> Action.getEntry entryId
-                "PUT" -> Action.putEntry entryId
-                "DELETE" -> Action.deleteEntry entryId
-                _ -> Action.notAllowed
+                "GET" -> getEntriesA
+                "POST" -> postEntriesA
+                _ -> notAllowedA
+            ["entries", eid] -> case method of
+                "GET" -> getEntryA eid
+                "PUT" -> putEntryA eid
+                "DELETE" -> deleteEntryA eid
+                _ -> notAllowedA
 
             ["keys"] -> case method of
-                "POST" -> Action.postKeysA
-                _ -> Action.notAllowed
-            ["keys", keyId] -> case method of
-                "GET" -> Action.getKeyA keyId
-                "DELETE" -> Action.deleteKeyA keyId
-                _ -> Action.notAllowed
+                "POST" -> postKeysA
+                _ -> notAllowedA
+            ["keys", kid] -> case method of
+                "GET" -> getKeyA kid
+                "DELETE" -> deleteKeyA kid
+                _ -> notAllowedA
 
-            _ -> Action.notFound
+            _ -> notFoundA

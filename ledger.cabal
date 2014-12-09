@@ -53,8 +53,8 @@ library
         Ledger.Application
         Ledger.Application.Action
         Ledger.Application.Action.Common
-        Ledger.Application.Action.Entries
         Ledger.Application.Action.Internal
+        Ledger.Application.Action.Entries
         Ledger.Application.Action.Keys
         Ledger.Application.Action.Root
         Ledger.Application.Application
@@ -64,7 +64,6 @@ library
         Ledger.Application.Model.Key
         Ledger.Application.Router
         Ledger.Application.State
-        Ledger.Application.State.Internal
         Ledger.Application.Transformer
         Ledger.Application.Transformer.EntryInput
         Ledger.Application.Transformer.EntryOutput

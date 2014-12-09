@@ -1,45 +1,53 @@
-module Ledger.Application.Action.Keys where
+module Ledger.Application.Action.Keys
+    ( postKeysA
+    , getKeyA
+    , deleteKeyA
+    ) where
 
-import Ledger.Application.Action.Common (Action, json, notFound)
-import Ledger.Application.Action.Internal (getState)
-import Ledger.Application.Model (KeyDeleted (KeyDeleted), keyDeleted, keyId,
-                                 newKey)
-import Ledger.Application.State (CreateKey (CreateKey))
-import Ledger.Application.State.Internal (queryKey, updateKeys)
-import Ledger.Application.Transformer (toKeyOutput)
+import Ledger.Application.Action.Common
+import Ledger.Application.Action.Internal
+import Ledger.Application.Model
+import Ledger.Application.State
+import Ledger.Application.Transformer
 
 import Control.Monad.IO.Class (liftIO)
-import Data.Acid (update)
-import Data.IxSet (updateIx)
-import Data.Text (Text)
+import Data.Acid (query, update)
 import Data.Time (getCurrentTime)
-import Network.HTTP.Types (status200, status201)
+import qualified Network.HTTP.Types as HTTP
 
 postKeysA :: Action
 postKeysA = do
     state <- getState
-    key <- liftIO newKey
-    key' <- liftIO (update state (CreateKey key))
-    let keyOutput = toKeyOutput key'
-    return (json status201 [] keyOutput)
+    key <- liftIO $ do
+        k <- newKey
+        update state (UpsertKey k)
+    let keyOutput = toKeyOutput key
+    json HTTP.status201 keyOutput
 
-getKeyA :: Text -> Action
-getKeyA kid = do
-    state <- getState
-    maybeKey <- liftIO (queryKey state kid)
-    case maybeKey of
-        Just key -> return (json status200 [] (toKeyOutput key))
-        Nothing -> notFound
+getKeyA :: KeyId -> Action
+getKeyA kid =
+    withKey kid $ \ key -> do
+        let keyOutput = toKeyOutput key
+        json HTTP.status200 keyOutput
 
-deleteKeyA :: Text -> Action
-deleteKeyA kid = do
+deleteKeyA :: KeyId -> Action
+deleteKeyA kid =
+    withKey kid $ \ key -> do
+        state <- getState
+        deletedKey <- liftIO $ do
+            now <- getCurrentTime
+            update state (DeleteKey key now)
+        let keyOutput = toKeyOutput deletedKey
+        json HTTP.status200 keyOutput
+
+--
+
+withKey :: KeyId -> (Key -> Action) -> Action
+withKey kid action = do
     state <- getState
-    maybeKey <- liftIO (queryKey state kid)
+    maybeKey <- liftIO (query state (GetKey kid))
     case maybeKey of
-        Just key -> do
-            now <- liftIO getCurrentTime
-            let deletedKey = key { keyDeleted = KeyDeleted (Just now) }
-            _ <- liftIO (updateKeys state (updateIx (keyId key) deletedKey))
-            let keyOutput = toKeyOutput deletedKey
-            return (json status200 [] keyOutput)
-        Nothing -> notFound
+        Just key -> case keyDeleted key of
+            KeyDeleted (Just _) -> goneA
+            KeyDeleted Nothing -> action key
+        Nothing -> notFoundA

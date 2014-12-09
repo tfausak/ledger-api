@@ -13,8 +13,6 @@ import Data.Text (Text, pack)
 import Data.Time (UTCTime (UTCTime), fromGregorian, getCurrentTime, utctDay,
                   utctDayTime)
 import Data.Typeable (Typeable)
-import Prelude hiding (id)
-import System.Random (randomRIO)
 
 newtype EntryDeleted = EntryDeleted (Maybe UTCTime)
     deriving (Data, Eq, Ord, Read, Show, Typeable)
@@ -65,8 +63,6 @@ defaultEntry = Entry
 newEntry :: IO Entry
 newEntry = do
     now <- getCurrentTime
-    id <- randomRIO (0, 10 ^ (10 :: Integer))
     return defaultEntry
         { entryCreated = now
-        , entryId = id
         }
