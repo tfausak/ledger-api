@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Ledger.Application.Router where
+module Ledger.Application.Router (route) where
 
 import Ledger.Application.Action
 
