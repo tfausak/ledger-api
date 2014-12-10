@@ -7,21 +7,17 @@ import Ledger.Application.State (State)
 import Control.Monad.Reader (ReaderT)
 import Data.Acid (AcidState)
 import Data.Aeson (ToJSON, Value (Null), encode)
-import Data.Map (fromList, insert, toList)
-import Network.HTTP.Types (ResponseHeaders, Status, hContentType)
+import Network.HTTP.Types (Status, hContentType)
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai (Request, Response, responseLBS)
 
 type Action = ReaderT (Request, AcidState State) IO Response
 
 json :: (ToJSON a) => Status -> a -> Action
-json status value = return (json' status [] value)
-
-json' :: (ToJSON a) => Status -> ResponseHeaders -> a -> Response
-json' status headers value = responseLBS
-    status
-    (toList (insert hContentType "application/json" (fromList headers)))
-    (encode value)
+json status value =
+    let headers = [(hContentType, "application/json")]
+        response = responseLBS status headers (encode value)
+    in  return response
 
 badRequestA :: Action
 badRequestA = json HTTP.status400 Null
