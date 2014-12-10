@@ -122,9 +122,9 @@ getEntry key eid = do
         Right (eid', _) -> do
             maybeEntry <- liftIO (query state (GetEntry eid'))
             case maybeEntry of
-                Just entry -> if entryKey entry == key
-                    then return (Just entry)
-                    else return Nothing
+                Just entry -> return $ if entryKey entry == key
+                    then Just entry
+                    else Nothing
                 Nothing -> return Nothing
 
 getEntries :: (MonadIO m) => Key -> ReaderT (a, AcidState State) m Entries
