@@ -50,13 +50,13 @@ $ rhc ssh
 ```
 
 ``` sh
-$ echo "warp {
-  host = \"\$(OPENSHIFT_HASKELL_IP)\"
-  port = \"\$(OPENSHIFT_HASKELL_PORT)\"
+$ echo 'warp {
+  host = "$(OPENSHIFT_HASKELL_IP)"
+  port = "$(OPENSHIFT_HASKELL_PORT)"
 }
 acid-state {
-  directory = \"\$(OPENSHIFT_DATA_DIR)/state/ledger-api\"
-}" > $OPENSHIFT_DATA_DIR/ledger-api.cfg
+  directory = "$(OPENSHIFT_DATA_DIR)/state/ledger-api"
+}' > $OPENSHIFT_DATA_DIR/ledger-api.cfg
 $ exit
 ```
 
