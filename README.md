@@ -39,7 +39,7 @@ $ cabal run tmp/ledger-api.cfg
 For a complete list of options, check out [the default configuration][6].
 
 [1]: https://github.com/tfausak/ledger-api
-[2]: https://travis-ci.org/tfausak/ledger-api.svg?branch=master
+[2]: https://img.shields.io/travis/tfausak/ledger-api/master.svg?style=flat
 [3]: https://travis-ci.org/tfausak/ledger-api
 [4]: https://www.haskell.org/platform/
 [5]: https://github.com/bos/configurator
