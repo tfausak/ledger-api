@@ -3,7 +3,7 @@
 module Ledger.Application.Action.Root where
 
 import Ledger.Application.Action.Common
-import Paths_ledger (version)
+import Paths_ledger_api (version)
 
 import Data.Aeson (object, (.=))
 import Data.Version (showVersion)

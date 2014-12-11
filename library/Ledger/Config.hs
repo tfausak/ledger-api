@@ -1,6 +1,6 @@
 module Ledger.Config (getConfig) where
 
-import Paths_ledger (getDataFileName)
+import Paths_ledger_api (getDataFileName)
 
 import Data.Configurator (Worth (Optional, Required), load)
 import Data.Configurator.Types (Config)
@@ -9,7 +9,7 @@ import System.FilePath ((</>))
 
 getConfig :: IO Config
 getConfig = do
-    path <- getFilePath "ledger.cfg"
+    path <- getFilePath "ledger-api.cfg"
     paths <- getArgs
     let worths = Required path : map Optional paths
     load worths
