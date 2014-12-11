@@ -2,6 +2,8 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.2.0 (2014-12-10)
+
 - Rewrote everything. Don't assume that anything still works the same.
 
 ## v0.1.5 (2014-11-24)
