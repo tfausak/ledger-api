@@ -2,6 +2,10 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.2.1 (2014-12-11)
+
+- Added support for GHC 7.6.
+
 ## v0.2.0 (2014-12-10)
 
 - Rewrote everything. Don't assume that anything still works the same.
