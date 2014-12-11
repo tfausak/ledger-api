@@ -1,4 +1,4 @@
-# [Ledger][1]
+# [ledger-api][1]
 
 [![Build Status][2]][3]
 
@@ -9,7 +9,7 @@ Watch your money fly away.
 
 ## Installation
 
-To install Ledger, you'll need [The Haskell Platform][4] version 2014.2.0.0.
+To install ledger-api, you'll need [The Haskell Platform][4] version 2014.2.0.0.
 
 ``` sh
 $ git clone https://github.com/tfausak/ledger-api.git
@@ -23,7 +23,7 @@ $ cabal run
 
 ## Configuration
 
-To configure Ledger, create a [Configurator][5] file.
+To configure ledger-api, create a [Configurator][5] file.
 
 ``` cfg
 # tmp/ledger-api.cfg
