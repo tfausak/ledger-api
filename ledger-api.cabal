@@ -13,7 +13,7 @@ description:
     https://github.com/tfausak/ledger-api#readme
 category: Web
 author: Taylor Fausak <taylor@fausak.me>
-tested-with: GHC ==7.8.*
+tested-with: GHC ==7.8 GHC ==7.6
 data-files:
     ledger-api.cfg
 data-dir: data
@@ -31,7 +31,7 @@ library
         base ==4.*,
         Cabal >=1.10,
         acid-state ==0.12.*,
-        aeson ==0.8.*,
+        aeson >=0.7 && <0.9,
         bytestring ==0.10.*,
         configurator ==0.3.*,
         containers ==0.5.*,
@@ -42,9 +42,9 @@ library
         network ==2.*,
         random ==1.*,
         safecopy ==0.8.*,
-        text ==1.*,
+        text >=0.11 && <2,
         time ==1.*,
-        transformers ==0.4.*,
+        transformers >=0.3 && <0.5,
         wai ==3.*,
         wai-cors ==0.2.*,
         wai-extra ==3.*,
