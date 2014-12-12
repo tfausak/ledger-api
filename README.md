@@ -43,7 +43,7 @@ For a complete list of options, check out [the default configuration][7].
 
 ## Deployment
 
-To deploy Ledger, create an [OpenShift][8] account.
+To deploy ledger-api, create an [OpenShift][8] account.
 
 ``` sh
 $ rhc app create ledgerapi http://www.accursoft.com/cartridges/yesod.yml
