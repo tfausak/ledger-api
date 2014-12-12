@@ -4,13 +4,15 @@
 
 Watch your money fly away.
 
+This is the back end for [ledger-react][4].
+
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Deployment](#deployment)
 
 ## Installation
 
-To install ledger-api, you'll need [The Haskell Platform][4] version 2014.2.0.0.
+To install ledger-api, you'll need [The Haskell Platform][5] version 2014.2.0.0.
 
 ``` sh
 $ git clone https://github.com/tfausak/ledger-api.git
@@ -24,7 +26,7 @@ $ cabal run
 
 ## Configuration
 
-To configure ledger-api, create a [Configurator][5] file.
+To configure ledger-api, create a [Configurator][6] file.
 
 ``` cfg
 # tmp/ledger-api.cfg
@@ -37,11 +39,11 @@ $ cabal run tmp/ledger-api.cfg
 # http://localhost:8888
 ```
 
-For a complete list of options, check out [the default configuration][6].
+For a complete list of options, check out [the default configuration][7].
 
 ## Deployment
 
-To deploy Ledger, create an [OpenShift][7] account.
+To deploy Ledger, create an [OpenShift][8] account.
 
 ``` sh
 $ rhc app create ledgerapi http://www.accursoft.com/cartridges/yesod.yml
@@ -69,7 +71,8 @@ $ git push origin github/master:master
 [1]: https://github.com/tfausak/ledger-api
 [2]: https://img.shields.io/travis/tfausak/ledger-api/master.svg?style=flat
 [3]: https://travis-ci.org/tfausak/ledger-api
-[4]: https://www.haskell.org/platform/
-[5]: https://github.com/bos/configurator
-[6]: data/ledger-api.cfg
-[7]: https://www.openshift.com
+[4]: https://github.com/tfausak/ledger-react
+[5]: https://www.haskell.org/platform/
+[6]: https://github.com/bos/configurator
+[7]: data/ledger-api.cfg
+[8]: https://www.openshift.com
