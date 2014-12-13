@@ -18,8 +18,7 @@ main = do
 
 message :: Settings -> String
 message settings = concat
-    [ "💸 "
-    , show (getHost settings)
+    [ show (getHost settings)
     , ":"
     , show (getPort settings)
     ]
