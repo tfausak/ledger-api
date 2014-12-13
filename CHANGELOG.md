@@ -2,6 +2,10 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.2.2 (2014-12-13)
+
+- Added a message when the server starts.
+
 ## v0.2.1 (2014-12-11)
 
 - Added support for GHC 7.6.
