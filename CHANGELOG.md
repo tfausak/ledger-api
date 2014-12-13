@@ -2,6 +2,10 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.2.3 (2014-12-13)
+
+- Removed Unicode from startup message.
+
 ## v0.2.2 (2014-12-13)
 
 - Added a message when the server starts.
