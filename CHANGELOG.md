@@ -2,6 +2,11 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.3.0 (2014-12-14)
+
+- Changed how entries are stored by only storing the key ID instead of the
+  entire key. Did not provide a migration.
+
 ## v0.2.3 (2014-12-13)
 
 - Removed Unicode from startup message.
