@@ -41,7 +41,7 @@ postEntriesA =
     withEntryInput $ \ entryInput -> do
         state <- getState
         entry <- liftIO newEntry
-        let entry' = fromEntryInput (entry { entryKey = key }) entryInput
+        let entry' = fromEntryInput (entry { entryKeyId = keyId key }) entryInput
         entry'' <- liftIO (update state (CreateEntry entry'))
         let entryOutput = toEntryOutput entry''
         json HTTP.status201 entryOutput
@@ -122,7 +122,7 @@ getEntry key eid = do
         Right (eid', _) -> do
             maybeEntry <- liftIO (query state (GetEntry eid'))
             case maybeEntry of
-                Just entry -> return $ if entryKey entry == key
+                Just entry -> return $ if entryKeyId entry == keyId key
                     then Just entry
                     else Nothing
                 Nothing -> return Nothing
@@ -132,7 +132,7 @@ getEntries key = do
     state <- getState
     allEntries <- liftIO (query state QueryEntries)
     let notDeletedEntries = getEQ (EntryDeleted Nothing) allEntries
-    let entries = getEQ key notDeletedEntries
+    let entries = getEQ (keyId key) notDeletedEntries
     return entries
 
 withEntryInput :: (EntryInput -> Action) -> Action

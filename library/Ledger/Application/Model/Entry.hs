@@ -3,7 +3,7 @@
 
 module Ledger.Application.Model.Entry where
 
-import Ledger.Application.Model.Key (Key, defaultKey)
+import Ledger.Application.Model.Key (KeyId, defaultKey, keyId)
 
 import Data.Data (Data)
 import Data.IxSet (Indexable, Proxy (Proxy), empty, ixGen, ixSet)
@@ -26,7 +26,7 @@ data Entry = Entry
     , entryCreated     :: UTCTime
     , entryDeleted     :: EntryDeleted
     , entryDescription :: Text
-    , entryKey         :: Key
+    , entryKeyId       :: KeyId
     , entryId          :: EntryId
     , entryTime        :: UTCTime
     } deriving (Data, Eq, Read, Show, Typeable)
@@ -34,7 +34,7 @@ data Entry = Entry
 instance Indexable Entry where
     empty = ixSet
         [ ixGen (Proxy :: Proxy EntryDeleted)
-        , ixGen (Proxy :: Proxy Key)
+        , ixGen (Proxy :: Proxy KeyId)
         , ixGen (Proxy :: Proxy EntryId)
         ]
 
@@ -52,7 +52,7 @@ defaultEntry = Entry
         }
     , entryDeleted = EntryDeleted Nothing
     , entryDescription = pack ""
-    , entryKey = defaultKey
+    , entryKeyId = keyId defaultKey
     , entryId = 0
     , entryTime = UTCTime
         { utctDay = fromGregorian 2000 1 1
