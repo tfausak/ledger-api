@@ -9,9 +9,7 @@ import Ledger.Application.Model
 import Control.Monad.Reader (ask)
 import Control.Monad.State (gets, modify)
 import Data.Acid (Query, Update, liftQuery, makeAcidic)
-import Data.IxSet (IxSet, Proxy (Proxy), empty, getEQ, getOne, toDescList,
-                   updateIx)
-import Data.Maybe (listToMaybe)
+import Data.IxSet (IxSet, empty, getEQ, getOne, toList, updateIx)
 import Data.SafeCopy (base, deriveSafeCopy)
 import Data.Time (UTCTime)
 
@@ -83,7 +81,8 @@ upsertEntry entry = do
 createEntry :: Entry -> Update State Entry
 createEntry entry = do
     oldEntries <- liftQuery queryEntries
-    let maxEntryId = maybe 0 entryId (listToMaybe (toDescList (Proxy :: Proxy EntryId) oldEntries))
+    let entryIds = map entryId (toList oldEntries)
+    let maxEntryId = maximum (0 : entryIds)
     let entry' = entry { entryId = succ maxEntryId }
     upsertEntry entry'
 
