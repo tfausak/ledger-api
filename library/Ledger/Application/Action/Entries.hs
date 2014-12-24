@@ -120,7 +120,7 @@ getEntry key eid = do
     case eitherEid of
         Left _ -> return Nothing
         Right (eid', _) -> do
-            maybeEntry <- liftIO (query state (GetEntry eid'))
+            maybeEntry <- liftIO (query state (GetEntry (EntryId eid')))
             case maybeEntry of
                 Just entry -> return $ if entryKeyId entry == keyId key
                     then Just entry

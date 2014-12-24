@@ -3,7 +3,7 @@
 module Ledger.Application.Transformer.EntryOutput where
 
 import Ledger.Application.Model.Entry (Entry, entryAmount, entryDescription,
-                                       entryId, entryTime)
+                                       entryId, entryTime, unEntryId)
 
 import Data.Aeson (ToJSON, object, toJSON, (.=))
 import Data.Text (Text)
@@ -28,6 +28,6 @@ toEntryOutput :: Entry -> EntryOutput
 toEntryOutput entry = EntryOutput
     { entryOutputAmount = fromRational (entryAmount entry)
     , entryOutputDescription = entryDescription entry
-    , entryOutputId = entryId entry
+    , entryOutputId = unEntryId (entryId entry)
     , entryOutputTime = entryTime entry
     }

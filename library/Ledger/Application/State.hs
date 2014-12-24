@@ -82,8 +82,8 @@ createEntry :: Entry -> Update State Entry
 createEntry entry = do
     oldEntries <- liftQuery queryEntries
     let entryIds = map entryId (toList oldEntries)
-    let maxEntryId = maximum (0 : entryIds)
-    let entry' = entry { entryId = succ maxEntryId }
+    let maxEntryId = maximum (0 : map unEntryId entryIds)
+    let entry' = entry { entryId = EntryId (succ maxEntryId) }
     upsertEntry entry'
 
 deleteEntry :: Entry -> UTCTime -> Update State Entry

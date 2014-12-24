@@ -19,7 +19,11 @@ newtype EntryDeleted = EntryDeleted (Maybe UTCTime)
 
 $(deriveSafeCopy 1 'base ''EntryDeleted)
 
-type EntryId = Integer
+newtype EntryId = EntryId
+    { unEntryId :: Integer
+    } deriving (Data, Eq, Ord, Read, Show, Typeable)
+
+$(deriveSafeCopy 1 'base ''EntryId)
 
 data Entry = Entry
     { entryAmount      :: Rational
@@ -53,7 +57,7 @@ defaultEntry = Entry
     , entryDeleted = EntryDeleted Nothing
     , entryDescription = pack ""
     , entryKeyId = keyId defaultKey
-    , entryId = 0
+    , entryId = EntryId 0
     , entryTime = UTCTime
         { utctDay = fromGregorian 2000 1 1
         , utctDayTime = 0
