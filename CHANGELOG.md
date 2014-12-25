@@ -2,6 +2,11 @@
 
 This package uses [Semantic Versioning][1].
 
+## v0.3.1 (2014-12-25)
+
+- Fixed a bug that incorrectly calculated the maximum entry ID.
+- Fixed a bug that prevented looking up some entries by ID.
+
 ## v0.3.0 (2014-12-14)
 
 - Changed how entries are stored by only storing the key ID instead of the
